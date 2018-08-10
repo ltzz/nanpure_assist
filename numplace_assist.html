@@ -56,9 +56,9 @@ var selectedPos = [0,0];
 
 var singleNumberKeyboard_currentNumber = 0; //単数字入力の現在の選択数字
 var singleNumberKeyboard_generateKey = function(){
-	var str = "";
-	for(var i=0; i<NUM_OF_CELLS+1; ++i){
-		var onclickcode = "singleNumberKeyboard_selectKey(" + i + ");";
+	let str = "";
+	for(let i=0; i < NUM_OF_CELLS + 1; ++i){
+		const onclickcode = "singleNumberKeyboard_selectKey(" + i + ");";
 		str += "<div id='key" + i + "' class='number_select_key noselectable' onmousedown='" + onclickcode + "'>" + i + "</div>";
 	}
 	str += "<div style='clear: both'></div>"; //float解除，はみ出し防止
@@ -115,18 +115,18 @@ window.onload = function(){
 			};
 
 			function setCells( tbl ){
-					for( var i = 0; i < NUM_OF_CELLS; ++i )
-						for( var j = 0; j < NUM_OF_CELLS; ++j )
+					for( let i = 0; i < NUM_OF_CELLS; ++i )
+						for( let j = 0; j < NUM_OF_CELLS; ++j )
 							setCell( j, i, tbl[i * NUM_OF_CELLS + j] );
 			};
 
 			function refresh(){
-				var logic = new Logic(NUM_OF_CELLS, BC, BR);
-				var wrong = logic.check( getCells() );
-				for( let i=0; i < NUM_OF_CELLS; ++i ) {
-					for( let j=0; j < NUM_OF_CELLS; ++j ) {
+				const logic = new Logic(NUM_OF_CELLS, BC, BR);
+				const wrong = logic.check( getCells() );
+				for( let i = 0; i < NUM_OF_CELLS; ++i ) {
+					for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 						var el = getCellElement( j, i );
-						var n = getCell( j, i );
+						const n = getCell( j, i );
 						const cdup = wrong.chist[j][n-1] > 1;
 						const rdup = wrong.rhist[i][n-1] > 1;
 						const bdup = wrong.bhist[ logic.idxToBlock( j, i ) ][n-1] > 1;
@@ -143,8 +143,8 @@ window.onload = function(){
 
 			function switchBoard(bnum){
 				selectedBoard = bnum;
-				for( var i　=　0; i　<　NUM_OF_CELLS; ++i ){
-					for( var j　=　0; j　<　NUM_OF_CELLS; ++j ){
+				for( let i　=　0; i　<　NUM_OF_CELLS; ++i ){
+					for( let j　=　0; j　<　NUM_OF_CELLS; ++j ){
 					var num = fields[selectedBoard].board[i][j];
 						$( "#" + _cellid( j, i ) ).html( num ? num : "<br>" );
 					}
@@ -152,8 +152,8 @@ window.onload = function(){
 			};
 
 			function clearBoard(){
-				for( var i　=　0; i < NUM_OF_CELLS; ++i ){
-					for( var j　=　0; j < NUM_OF_CELLS; ++j ){
+				for( let i　=　0; i < NUM_OF_CELLS; ++i ){
+					for( let j　=　0; j < NUM_OF_CELLS; ++j ){
 						setCell( j, i, 0 );
 					}
 				}
@@ -279,13 +279,13 @@ window.onload = function(){
 	singleNumberKeyboard_selectKey(0);
 
 	Tabs();
-	var keyboardPossibleList;
+	let keyboardPossibleList;
 	var drawKeyboard = function( c, r, rx, ry )
 	{
 
-		var KEY_RADIUS = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );//9x9で最適だったサイズの流用
-		var OUTER_RADIUS = CELL_SIZ * 2.0 * ( NUM_OF_CELLS / 10 );
-		var INNER_RADIUS = CELL_SIZ * 0.7 * ( NUM_OF_CELLS / 10 );
+		const KEY_RADIUS = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );//9x9で最適だったサイズの流用
+		const OUTER_RADIUS = CELL_SIZ * 2.0 * ( NUM_OF_CELLS / 10 );
+		const INNER_RADIUS = CELL_SIZ * 0.7 * ( NUM_OF_CELLS / 10 );
 		var centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
 		var centerY = ui.getCellTop( r ) + CELL_SIZ / 2;
 
@@ -301,7 +301,7 @@ window.onload = function(){
 		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
 		ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
 
-		var sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
+		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
 		var mouseAngle = Math.atan2( rx, -ry );
 		mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
 		var selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
@@ -312,7 +312,7 @@ window.onload = function(){
 			var keyAngle = i * sAngle;
 			var numchr = (i === 0) ? 'C' : i;
 			var chrWidth = ctx.measureText( numchr ).width;
-			var keyRX = KEY_RADIUS * Math.sin( keyAngle );
+			var keyRX =  KEY_RADIUS * Math.sin( keyAngle );
 			var keyRY = -KEY_RADIUS * Math.cos( keyAngle );
 			var keyX = centerX + keyRX, keyY = centerY + keyRY;
 			if( selectedNumber === i && isInRange) {
@@ -355,14 +355,14 @@ window.onload = function(){
 		var numbers_count = new Array( NUM_OF_CELLS+1 ).fill(0);
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
-				var val = tbl[ i * NUM_OF_CELLS + j ] - 1; // そのセルの数字
+				const val = tbl[ i * NUM_OF_CELLS + j ] - 1; // そのセルの数字
 				++numbers_count[val + 1]; // その数字の使用個数をインクリメント
 			}
 		}
 		ctx.font = "10px Segoe UI";
 		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
 		for( let i = 1; i <= NUM_OF_CELLS; ++i ) { //個数表示
-			var str = i + " : " + numbers_count[i] + " / " + NUM_OF_CELLS;
+			const str = i + " : " + numbers_count[i] + " / " + NUM_OF_CELLS;
 			ctx.fillText( str, 10, HEIGHT - 10 * ( NUM_OF_CELLS - i + 2) );
 				//Render.tally( ctx, numbers_count[i] , i * 20 + 100, HEIGHT - 50 ); // 正の字
 		}
@@ -375,7 +375,7 @@ window.onload = function(){
 		ctx.font = fsize + "px Meiryo UI";
 
 		var predict = logic.predict(tbl);
-		var colors = [
+		const colors = [
 			"rgba(0, 127, 255, 0.7)",
 			"rgba(0, 255, 127, 0.7)",
 			"rgba(255, 127, 0, 0.7)"
@@ -400,23 +400,25 @@ window.onload = function(){
 	var drawPossible = function(){
 		var possibleList = logic.suggest(ui.getCells());
     var cvs = document.getElementById("possible");
-    cvs.width = WIDTH; cvs.height = HEIGHT;
+    cvs.width = WIDTH;
+		cvs.height = HEIGHT;
     var ctx = cvs.getContext('2d');
 		var fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
-				var cnt = 0, n;
+				let cnt = 0, n;
 				ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
 				for( let k = 0; k < NUM_OF_CELLS; ++k ) {
 					if( !possibleList[NUM_OF_CELLS * i + j][k] ){
 						continue;
 					}
 
-					var dx = ( fsize + 1 ) * ( k % BC | 0 );
-					var dy = ( fsize + 1 ) * ( k / BC | 0 );
+					const dx = ( fsize + 1 ) * ( k % BC | 0 );
+					const dy = ( fsize + 1 ) * ( k / BC | 0 );
 					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize, ui.getCellTop( i ) + dy + fsize );
-					++cnt; n = k;
+					++cnt;
+					n = k;
 				}
 			}
 		}
@@ -431,7 +433,7 @@ window.onload = function(){
 		var fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
 
-		var chist = [], rhist = [], bhist = [];
+		let chist = [], rhist = [], bhist = [];
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			chist[i] = new Array(NUM_OF_CELLS).fill(0);
 			rhist[i] = new Array(NUM_OF_CELLS).fill(0);
@@ -442,7 +444,7 @@ window.onload = function(){
 		var possibleList = logic.suggest(tbl);
 		for( let r = 0; r < NUM_OF_CELLS; ++r ) {//行，列，ブロックごとにヒストグラムを作る
 			for( let c = 0; c < NUM_OF_CELLS; ++c ) {
-				for( let num = 0; num < NUM_OF_CELLS; ++num){
+				for( let num = 0; num < NUM_OF_CELLS; ++num ){
 					if( !possibleList[ NUM_OF_CELLS * r + c ][num] ) continue;
 					if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){
 						++chist[c][num];
@@ -456,8 +458,8 @@ window.onload = function(){
 		for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 			ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
 			for( let k = 0; k < NUM_OF_CELLS; ++k ) {
-				var dx = ( fsize + 1 ) * ( k % BC | 0 );
-				var dy = ( fsize + 1 ) * ( k / BC | 0 );
+				const dx = ( fsize + 1 ) * ( k % BC | 0 );
+				const dy = ( fsize + 1 ) * ( k / BC | 0 );
 				if( chist[j][k] ) {
 					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize, ui.getCellTop( NUM_OF_CELLS ) + dy + fsize );
 				}
@@ -475,10 +477,10 @@ window.onload = function(){
 	if(confirm("盤面を全消去します"))
 		ui.clearBoard();
 	} );
-	$("#solve").mousedown(function(){
+	$("#solve").mousedown( function(){
 		let tbl = ui.getCells();
 		ui.setCells( logic.solver( tbl ) );
-	});
+	} );
 
 	const keys = {
 		"ctrl": 17,
@@ -491,7 +493,7 @@ window.onload = function(){
 	};
 
 	$(window).keydown(function( e ){
-		var keyCode = e.keyCode;
+		const keyCode = e.keyCode;
 		if( keyCode === keys.ctrl ){
 			suggestKeydown();
     }
@@ -546,7 +548,7 @@ window.onload = function(){
 		'touchmove mousemove': function( evt ){
 			evt.preventDefault();
 			const isTouch = evt.type === "touchmove";
-			var touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
+			const touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
 			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
 			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
 
@@ -561,8 +563,8 @@ window.onload = function(){
 			}
 		},
 		'touchend mouseup': function( evt ){
-			var isTouch = evt.type === "touchend";
-			var touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
+			const isTouch = evt.type === "touchend";
+			const touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
 			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
 			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
 			Render.clearScreen( ctx );
@@ -591,7 +593,7 @@ window.onload = function(){
     	var cvs = $("#video_covering");
     	var ctx = cvs.get(0).getContext('2d');
     	ctx.strokeStyle="#ff0000";
-    	for(var i=0; i <= 3; ++i){
+    	for(var i = 0; i <= 3; ++i){
     		ctx.moveTo( offsetx + 280 * i/3, offsety + 0);
     		ctx.lineTo( offsetx + 280 * i/3, offsety + 280);
     		ctx.moveTo( offsetx + 0      , offsety + 280*i/3);

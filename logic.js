@@ -27,12 +27,13 @@ class Logic {
 
   check(arr) {
     const NUM_OF_CELLS = this.NUM_OF_CELLS;
-    var BC = this.BC,
+    const BC = this.BC,
       BR = this.BR;
-    var ret = [];
-    var chist = [],
+    let ret = [];
+    let chist = [],
       rhist = [],
       bhist = [];
+
     for (let i = 0; i < NUM_OF_CELLS; ++i) {
       //chist[i] = new Array(NUM_OF_CELLS).fill(0);
       //rhist[i] = new Array(NUM_OF_CELLS).fill(0);
@@ -46,10 +47,11 @@ class Logic {
         rhist[i][j] = 0;
       }
     }
+
     let maxcnt = 0;
     for (let r = 0; r < NUM_OF_CELLS; ++r) {
       for (let c = 0; c < NUM_OF_CELLS; ++c) {
-        var val = arr[r * NUM_OF_CELLS + c] - 1;
+        const val = arr[r * NUM_OF_CELLS + c] - 1;
         if (val >= 0) {
           maxcnt = Math.max(++chist[c][val], maxcnt);
           maxcnt = Math.max(++rhist[r][val], maxcnt);
@@ -67,11 +69,11 @@ class Logic {
   solver(tbl) {
     const NUM_OF_CELLS = this.NUM_OF_CELLS;
     const TOTAL_CELLS = this.TOTAL_CELLS;
-    var Q = [],
+    let Q = [],
       ans = null;
     Q.push(tbl.concat());
     while ( Q.length ) {
-      var arr = Q.pop(),
+      let arr = Q.pop(),
         i;
       if ( !this.check(arr).valid ) continue;
       for (i = 0; i < TOTAL_CELLS; ++i) {
@@ -94,7 +96,7 @@ class Logic {
     }
   }
   suggest(tbl) {
-    var possibleList = new Array(NUM_OF_CELLS * NUM_OF_CELLS);
+    let possibleList = new Array(NUM_OF_CELLS * NUM_OF_CELLS);
     for (let i = 0; i < NUM_OF_CELLS; ++i) {
       for (let j = 0; j < NUM_OF_CELLS; ++j) {
         possibleList[i * NUM_OF_CELLS + j] = new Array(NUM_OF_CELLS).fill(true);
@@ -124,18 +126,19 @@ class Logic {
   };
 
   PL2Ans(possibleList, tbl) {
-    var chist = [],
+    let chist = [],
       rhist = [],
       bhist = [];
 
-    for (var i = 0; i < NUM_OF_CELLS; ++i) {
+    for (let i = 0; i < NUM_OF_CELLS; ++i) {
       chist[i] = new Array(NUM_OF_CELLS).fill(0);
       rhist[i] = new Array(NUM_OF_CELLS).fill(0);
       bhist[i] = new Array(NUM_OF_CELLS).fill(0);
     }
-    for (var r = 0; r < NUM_OF_CELLS; ++r) { //行，列，ブロックごとにヒストグラムを作る
-      for (var c = 0; c < NUM_OF_CELLS; ++c) {
-        for (var num = 0; num < NUM_OF_CELLS; ++num) {
+
+    for (let r = 0; r < NUM_OF_CELLS; ++r) { //行，列，ブロックごとにヒストグラムを作る
+      for (let c = 0; c < NUM_OF_CELLS; ++c) {
+        for (let num = 0; num < NUM_OF_CELLS; ++num) {
           if (possibleList[NUM_OF_CELLS * r + c][num] && tbl[r * NUM_OF_CELLS + c] == 0) {
             ++chist[c][num];
             ++rhist[r][num];
@@ -145,7 +148,7 @@ class Logic {
       }
     }
 
-    var result = [];
+    let result = [];
     for (let i = 0; i < NUM_OF_CELLS; ++i) {
       for (let j = 0; j < NUM_OF_CELLS; ++j) {
         result[NUM_OF_CELLS * i + j] = {
@@ -154,7 +157,7 @@ class Logic {
         };
         var val = tbl[i * NUM_OF_CELLS + j];
         if (val != 0) continue; //既に数字がある時は候補を出さない
-        var cnt = 0,
+        let cnt = 0,
           n;
         for (var k = 0; k < NUM_OF_CELLS; ++k) {
           if (possibleList[NUM_OF_CELLS * i + j][k]) {
@@ -162,13 +165,15 @@ class Logic {
             n = k;
           }
         }
+
         if (cnt === 1) { //あるマスで可能な数字が1つのみ
           result[NUM_OF_CELLS * i + j] = {
             "number": n + 1,
             "ansType": 0
           };
         }
-        for (var k = 0; k < NUM_OF_CELLS; ++k) {
+
+        for (let k = 0; k < NUM_OF_CELLS; ++k) {
           if (possibleList[NUM_OF_CELLS * i + j][k] &&
             (chist[j][k] === 1 || rhist[i][k] === 1 || bhist[this.idxToBlock(j, i)][k] === 1)
           ) { //まとまりの中でそのマスしかその数字が入らない時
@@ -179,6 +184,7 @@ class Logic {
             break;
           }
         }
+
       }
     }
     return result;
