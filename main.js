@@ -236,9 +236,12 @@ window.onload = function(){
 	var drawKeyboard = function( c, r, rx, ry )
 	{
 
-		const KEY_RADIUS = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );//9x9で最適だったサイズの流用
+		const KEY_RADIUS   = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );
+		// 9x9で最適だったサイズの流用
+
 		const OUTER_RADIUS = CELL_SIZ * 2.0 * ( NUM_OF_CELLS / 10 );
 		const INNER_RADIUS = CELL_SIZ * 0.7 * ( NUM_OF_CELLS / 10 );
+
 		var centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
 		var centerY = ui.getCellTop( r ) + CELL_SIZ / 2;
 
@@ -272,7 +275,9 @@ window.onload = function(){
 			var chrWidth = ctx.measureText( numchr ).width;
 			var keyRX =  KEY_RADIUS * Math.sin( keyAngle );
 			var keyRY = -KEY_RADIUS * Math.cos( keyAngle );
-			var keyX = centerX + keyRX, keyY = centerY + keyRY;
+			var keyX = centerX + keyRX
+			var keyY = centerY + keyRY;
+			
 			if( selectedNumber === i && isInRange ) {
 				ctx.translate( centerX, centerY );
 				const keyLineAngle1 = ( i - 0.5 ) * sAngle;
@@ -297,15 +302,8 @@ window.onload = function(){
 				ui.setCell( c, r, i );
 			}
 
-			if( i === 0 ) {
-				ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-			}
-			else if( keyboardPossibleList[NUM_OF_CELLS * r + c][i-1] ){
-				ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-			}
-			else {   //入力できない文字を灰色に
-				ctx.fillStyle = "rgba(192, 192, 192, 0.7)";
-			}
+			ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][i-1], i );
+
 			ctx.fillText( numchr, keyX - chrWidth/2, keyY + ctx.measureText( '1' ).width/2 );
 		}
 		ctx.restore();
@@ -391,7 +389,8 @@ window.onload = function(){
 	var drawUsedNumber = function(){
 		var tbl = ui.getCells();
     var cvs = document.createElement('canvas');
-    cvs.width = WIDTH; cvs.height = HEIGHT;
+    cvs.width = WIDTH;
+		cvs.height = HEIGHT;
     var ctx = cvs.getContext('2d');
 		const fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
@@ -481,7 +480,7 @@ window.onload = function(){
 			}
 			var cellid = ui._cellid(selectedPos[0], selectedPos[1]);
 			$(".selectedCell").removeClass("selectedCell");
-			$("#"+cellid).addClass("selectedCell");
+			$("#" + cellid).addClass("selectedCell");
 		}
 		if( keys["0"] <= keyCode && keyCode <= keys["0"] + 9 ){
 			ui.setCell( selectedPos[0], selectedPos[1], keyCode-keys["0"] );
@@ -504,10 +503,9 @@ window.onload = function(){
 		'touchstart mousedown': function( evt ){
 			const isTouch = evt.type === "touchstart";
 			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
-			const m_x = mouseRPoint.mx;
-			const m_y = mouseRPoint.my;
-			var c = ((m_x - MARGIN)/CELL_SIZ + 1|0) - 1
-			var r =  ((m_y - MARGIN)/CELL_SIZ + 1|0) - 1;
+
+			var c = ((mouseRPoint.mx - MARGIN) / CELL_SIZ + 1|0) - 1
+			var r = ((mouseRPoint.my - MARGIN) / CELL_SIZ + 1|0) - 1;
 			nowc = c; nowr = r;
 			keyboardPossibleList = logic.suggest( ui.getCells() );
 			if( ui._inrange(nowc, nowr) ) {
@@ -538,8 +536,6 @@ window.onload = function(){
 		'touchend mouseup': function( evt ){
 			const isTouch = evt.type === "touchend";
 			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
-			const m_x = mouseRPoint.mx;
-			const m_y = mouseRPoint.my;
 
 			Render.clearScreen( ctx );
 
@@ -566,7 +562,7 @@ window.onload = function(){
     $("#webcam_getmedia").mousedown(function(e){
     	var cvs = $("#video_covering");
     	var ctx = cvs.get(0).getContext('2d');
-    	ctx.strokeStyle="#ff0000";
+    	ctx.strokeStyle = "#ff0000";
     	for(let i = 0; i <= 3; ++i){
     		ctx.moveTo( offsetx + 280 * i/3, offsety + 0);
     		ctx.lineTo( offsetx + 280 * i/3, offsety + 280);

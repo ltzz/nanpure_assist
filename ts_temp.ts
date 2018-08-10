@@ -60,3 +60,28 @@ interface MouseRelativePoint {
    const mouseRPoint = getRelativePoint( mousePoint );
    return mouseRPoint;
  }
+
+
+ /**
+  * getKeyboardColor - 円形キーボードの色を取得
+  *
+  * @param  {type} possible 入力可能な数字かどうか(numが1以上のとき有効)
+  * @param  {type} num 数字
+  * @return {type}        色
+  */
+function getKeyboardColor(possible, num) : string {
+  let ret_val = "rgba(0, 0, 0, 0.7)";
+  if( num === 0 ) {
+    // 0はクリアは見えやすい色
+    ret_val = "rgba(0, 0, 0, 0.7)";
+  }
+  else if( possible ){
+    // 入力可能な数字も見えやすい色
+    ret_val = "rgba(0, 0, 0, 0.7)";
+  }
+  else {
+    //入力できない文字を灰色に
+    ret_val = "rgba(192, 192, 192, 0.7)";
+  }
+  return ret_val;
+}
