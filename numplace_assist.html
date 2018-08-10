@@ -232,16 +232,16 @@ window.onload = function(){
 				html: "<br>",
 			});
 			cell.addClass("cell");
-			if( j % BC === 0 ) {
+			if( j % BC === 0 ) { // ブロックの左端
 				cell.addClass("cell_left");
 			}
-			if( j % BC === BC - 1 ){
+			if( j % BC === BC - 1 ){ // ブロックの右端
 				cell.addClass("cell_right");
 			}
-			if( i % BR === 0 ) {
+			if( i % BR === 0 ) { // ブロックの上端
 				cell.addClass("cell_top");
 			}
-			if( i % BR === BR - 1 ){
+			if( i % BR === BR - 1 ){  // ブロックの下端
 				cell.addClass("cell_bottom");
 			}
 			if(selectedPos[0] === j && selectedPos[1] === i){
@@ -308,7 +308,7 @@ window.onload = function(){
 		var dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
 		var isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
 
-		for( let i=0; i <= NUM_OF_CELLS; ++i ) {
+		for( let i = 0; i <= NUM_OF_CELLS; ++i ) {
 			var keyAngle = i * sAngle;
 			var numchr = (i === 0) ? 'C' : i;
 			var chrWidth = ctx.measureText( numchr ).width;
@@ -383,10 +383,10 @@ window.onload = function(){
 
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
-				var anstype = predict[ NUM_OF_CELLS * i + j].ansType;
-				var number = predict[ NUM_OF_CELLS * i + j].number;
+				const anstype = predict[ NUM_OF_CELLS * i + j].ansType;
+				const number = predict[ NUM_OF_CELLS * i + j].number;
 				if( number == -1 ) continue;
-				ctx.fillStyle = colors[anstype];
+				ctx.fillStyle = colors[ anstype ];
 				console.log( number );
 				ctx.fillText( number, ui.getCellLeft( j ) + CELL_SIZ/2, ui.getCellTop( i ) + CELL_SIZ/2 );
 			}
@@ -447,7 +447,7 @@ window.onload = function(){
 					if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){
 						++chist[c][num];
 						++rhist[r][num];
-						++bhist[ (r/BR|0) * BR + (c/BC|0) ][num];
+						++bhist[ logic.idxToBlock(c, r) ][num];
 					}
 				}
 			}
@@ -462,7 +462,7 @@ window.onload = function(){
 					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize, ui.getCellTop( NUM_OF_CELLS ) + dy + fsize );
 				}
 				if( rhist[j][k] ) {
-					ctx.fillText( k + 1, ui.getCellLeft( NUM_OF_CELLS ) + dx + fsize, ui.getCellTop( j ) + dy + fsize);
+					ctx.fillText( k + 1, ui.getCellLeft( NUM_OF_CELLS ) + dx + fsize, ui.getCellTop( j ) + dy + fsize );
 				}
 			}
 		}
@@ -483,8 +483,8 @@ window.onload = function(){
 	const keys = {
 		"ctrl": 17,
 		"left": 37,
-		"up":		38,
-		"right":39,
+		// "up":		38,
+		// "right":39,
 		"down":	40,
 		"0":		48,
 		"backspace": 8,
@@ -492,17 +492,17 @@ window.onload = function(){
 
 	$(window).keydown(function( e ){
 		var keyCode = e.keyCode;
-		if(keyCode === keys.ctrl){
+		if( keyCode === keys.ctrl ){
 			suggestKeydown();
     }
 		if( keys.left <= keyCode && keyCode <= keys.down ){
 			e.preventDefault();//prevent scroll
-			var dx = 0, dy = 0;
-			if( keyCode === keys.left  ) dx = -1;
-			if( keyCode === keys.right ) dx = 1;
-			if( keyCode === keys.up    ) dy = -1;
-			if( keyCode === keys.down  ) dy = 1;
-			if( ui._inrange( selectedPos[0] + dx, selectedPos[1] + dy ) ){
+
+			const DPos = keycodeToDPos( keyCode );
+			const dx = DPos.dx;
+			const dy = DPos.dy;
+
+			if( ui._inrange( selectedPos[0] + dx, selectedPos[1] + dy ) ){ // セルの移動可能なら
 				selectedPos[0] += dx;
 				selectedPos[1] += dy;
 			}
@@ -514,7 +514,7 @@ window.onload = function(){
 			ui.setCell( selectedPos[0], selectedPos[1], keyCode-keys["0"] );
 			ui.refresh();
 		}
-		if(keyCode == keys.backspace){
+		if( keyCode === keys.backspace ){
 			ui.setCell( selectedPos[0], selectedPos[1], 0 );
 			ui.refresh();
 		}
@@ -522,7 +522,7 @@ window.onload = function(){
 	});
 
   $(window).keyup(function(e){
-      if(e.keyCode === keys.ctrl){
+      if( e.keyCode === keys.ctrl ){
       	suggestKeyUp();
       }
   });
@@ -699,7 +699,7 @@ window.onload = function(){
 							++testok;
 						}else{
 
-							for(let j=0;j < 28*28;++j){
+							for(let j=0; j < 28*28; ++j){
 								if( parr[i] ){
 									var val1 = 0xff - tmpl.templates[ parr[i]-1 ][j];
 									val1 = val1 > 0 ? 0 : val1;

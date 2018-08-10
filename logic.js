@@ -18,6 +18,7 @@ class Logic {
     this.NUM_OF_CELLS = NUM_OF_CELLS;
     this.BC = BC;
     this.BR = BR;
+    this.TOTAL_CELLS = NUM_OF_CELLS * NUM_OF_CELLS;
   }
 
   idxToBlock(c, r) {
@@ -25,7 +26,7 @@ class Logic {
   }
 
   check(arr) {
-    var NUM_OF_CELLS = this.NUM_OF_CELLS;
+    const NUM_OF_CELLS = this.NUM_OF_CELLS;
     var BC = this.BC,
       BR = this.BR;
     var ret = [];
@@ -64,7 +65,8 @@ class Logic {
   }
 
   solver(tbl) {
-    var NUM_OF_CELLS = this.NUM_OF_CELLS;
+    const NUM_OF_CELLS = this.NUM_OF_CELLS;
+    const TOTAL_CELLS = this.TOTAL_CELLS;
     var Q = [],
       ans = null;
     Q.push(tbl.concat());
@@ -72,7 +74,7 @@ class Logic {
       var arr = Q.pop(),
         i;
       if ( !this.check(arr).valid ) continue;
-      for (i = 0; i < NUM_OF_CELLS * NUM_OF_CELLS; ++i) {
+      for (i = 0; i < TOTAL_CELLS; ++i) {
         if (arr[i] == 0) {
           for (j = 1; j <= NUM_OF_CELLS; ++j) {
             arr[i] = j;
@@ -81,7 +83,7 @@ class Logic {
           break;
         }
       }
-      if (i === NUM_OF_CELLS * NUM_OF_CELLS) {
+      if (i === TOTAL_CELLS) {
         ans = arr;
         break;
       }
