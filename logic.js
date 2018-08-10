@@ -3,6 +3,8 @@
  */
 
 
+'use strict';
+
 /**
  * Logic - セル数にかかわらず一般化できるロジック
  *
@@ -10,17 +12,19 @@
  * @param  {type} BC           ブロックの横のセル数
  * @param  {type} BR           ブロックの縦のセル数
  */
-function Logic(NUM_OF_CELLS, BC, BR) {
-  this.NUM_OF_CELLS = NUM_OF_CELLS;
-  this.BC = BC;
-  this.BR = BR;
-  var BC = this.BC;
-  var BR = this.BR;
+class Logic {
 
-  this._idxToBlock = function(c, r) {
+  constructor(NUM_OF_CELLS, BC, BR) {
+    this.NUM_OF_CELLS = NUM_OF_CELLS;
+    this.BC = BC;
+    this.BR = BR;
+  }
+
+  idxToBlock(c, r) {
     return (r / BR | 0) * BR + (c / BC | 0);
   }
-  this.check = function(arr) {
+
+  check(arr) {
     var NUM_OF_CELLS = this.NUM_OF_CELLS;
     var BC = this.BC,
       BR = this.BR;
@@ -48,7 +52,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
         if (val >= 0) {
           maxcnt = Math.max(++chist[c][val], maxcnt);
           maxcnt = Math.max(++rhist[r][val], maxcnt);
-          maxcnt = Math.max(++bhist[this._idxToBlock(c, r)][val], maxcnt);
+          maxcnt = Math.max(++bhist[this.idxToBlock(c, r)][val], maxcnt);
         }
       }
     }
@@ -59,15 +63,15 @@ function Logic(NUM_OF_CELLS, BC, BR) {
     return ret;
   }
 
-  this.solver = function(tbl) {
+  solver(tbl) {
     var NUM_OF_CELLS = this.NUM_OF_CELLS;
     var Q = [],
       ans = null;
     Q.push(tbl.concat());
-    while (Q.length) {
+    while ( Q.length ) {
       var arr = Q.pop(),
         i;
-      if (!this.check(arr).valid) continue;
+      if ( !this.check(arr).valid ) continue;
       for (i = 0; i < NUM_OF_CELLS * NUM_OF_CELLS; ++i) {
         if (arr[i] == 0) {
           for (j = 1; j <= NUM_OF_CELLS; ++j) {
@@ -87,7 +91,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
       return ans;
     }
   }
-  this.suggest = function(tbl) {
+  suggest(tbl) {
     var possibleList = new Array(NUM_OF_CELLS * NUM_OF_CELLS);
     for (let i = 0; i < NUM_OF_CELLS; ++i) {
       for (let j = 0; j < NUM_OF_CELLS; ++j) {
@@ -103,7 +107,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
           var val = tbl[r * NUM_OF_CELLS + c] - 1;
           var br = r / BR | 0,
             bc = c / BC | 0;
-          for (var i = 0; i < NUM_OF_CELLS; ++i) {
+          for (let i = 0; i < NUM_OF_CELLS; ++i) {
             //該当ブロックのその数字を消す
             possibleList[NUM_OF_CELLS * (BC * br + (i / BC | 0)) + BC * bc + (i % BC)][val] = false;
             //該当行のその数字を消す
@@ -117,7 +121,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
     return possibleList;
   };
 
-  this.PL2Ans = function(possibleList, tbl) {
+  PL2Ans(possibleList, tbl) {
     var chist = [],
       rhist = [],
       bhist = [];
@@ -133,7 +137,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
           if (possibleList[NUM_OF_CELLS * r + c][num] && tbl[r * NUM_OF_CELLS + c] == 0) {
             ++chist[c][num];
             ++rhist[r][num];
-            ++bhist[this._idxToBlock(c, r)][num];
+            ++bhist[this.idxToBlock(c, r)][num];
           }
         }
       }
@@ -164,7 +168,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
         }
         for (var k = 0; k < NUM_OF_CELLS; ++k) {
           if (possibleList[NUM_OF_CELLS * i + j][k] &&
-            (chist[j][k] === 1 || rhist[i][k] === 1 || bhist[this._idxToBlock(j, i)][k] === 1)
+            (chist[j][k] === 1 || rhist[i][k] === 1 || bhist[this.idxToBlock(j, i)][k] === 1)
           ) { //まとまりの中でそのマスしかその数字が入らない時
             result[NUM_OF_CELLS * i + j] = {
               "number": k + 1,
@@ -178,7 +182,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
     return result;
   };
 
-  this.TKMethod = function(tbl) { //T.K氏の方法
+  TKMethod(tbl) { //T.K氏の方法
     var possibleList = this.suggest(tbl);
     var row_possible = []; //行について、，入る事が分かっている数字
     var col_possible = [];
@@ -202,9 +206,9 @@ function Logic(NUM_OF_CELLS, BC, BR) {
       for (let num = 0; num < NUM_OF_CELLS; ++num) {
         for (let i = 0; i < BR; ++i) {
           for (let j = 0; j < BC; ++j) {
-            var minx = NUM_OF_CELLS,
+            let minx = NUM_OF_CELLS,
               miny = NUM_OF_CELLS;
-            var maxx = 0,
+            let maxx = 0,
               maxy = 0;
             //各ブロックについて
             for (let k = 0; k < BC; ++k) {
@@ -222,10 +226,10 @@ function Logic(NUM_OF_CELLS, BC, BR) {
             if (minx == maxx && miny != maxy) {
               console.log("x = " + maxx, "y = " + [miny, maxy].join(","), "num=" + (num + 1));
               col_possible[maxx][num] = false;
-              for (var p = 0; p < NUM_OF_CELLS; ++p) {
+              for (let p = 0; p < NUM_OF_CELLS; ++p) {
                 if (miny <= p && p <= maxy) continue;
                 possibleList[p * NUM_OF_CELLS + maxx][num] = false;
-                ok = false;
+                ok = false; // 次のループ
               }
 
             }
@@ -235,18 +239,18 @@ function Logic(NUM_OF_CELLS, BC, BR) {
               for (let p = 0; p < NUM_OF_CELLS; ++p) {
                 if (minx <= p && p <= maxx) continue;
                 possibleList[maxy * NUM_OF_CELLS + p][num] = false;
-                ok = false;
+                ok = false; // 次のループ
               }
             }
           }
         }
       }
       ++turn;
-    } while (!ok);
+    } while ( !ok );
     return possibleList;
   };
 
-  this.predict = function(tbl) {
+  predict(tbl) {
     var possibleList = this.suggest(tbl);
     var possibleList2 = this.suggest(tbl);
     //var possibleList2 = this.TKMethod(tbl);

@@ -67,7 +67,7 @@ var singleNumberKeyboard_generateKey = function(){
 
 var singleNumberKeyboard_selectKey = function(num){
 	singleNumberKeyboard_currentNumber = num;
-	for(var i=0; i<NUM_OF_CELLS+1; ++i){
+	for(var i=0; i < NUM_OF_CELLS + 1; ++i){
 		document.getElementById("key"+i).style.backgroundColor = "#ffffff";
 	}
 	document.getElementById("key"+num).style.backgroundColor = "#cccccc";
@@ -86,8 +86,8 @@ window.onload = function(){
 				return "cell" + r + "_" + c;
 			};
 			function _inrange( c, r ){
-				var inrangec = 0 <= c && c < NUM_OF_CELLS;
-				var inranger = 0 <= r && r < NUM_OF_CELLS;
+				const inrangec = 0 <= c && c < NUM_OF_CELLS;
+				const inranger = 0 <= r && r < NUM_OF_CELLS;
 				return inrangec && inranger;
 			};
 			function getCellElement( x, y ){
@@ -101,8 +101,8 @@ window.onload = function(){
 
 			function getCells(){
 				var tbl = new Array( NUM_OF_CELLS * NUM_OF_CELLS );
-				for( var i=0; i<NUM_OF_CELLS; ++i ){
-					for( var j=0; j<NUM_OF_CELLS; ++j ){
+				for( let i = 0; i < NUM_OF_CELLS; ++i ){
+					for( let j = 0; j < NUM_OF_CELLS; ++j ){
 						tbl[i*NUM_OF_CELLS+j] = getCell( j, i );
 					}
 				}
@@ -115,21 +115,21 @@ window.onload = function(){
 			};
 
 			function setCells( tbl ){
-					for( var i=0; i<NUM_OF_CELLS; ++i )
-						for( var j=0; j<NUM_OF_CELLS; ++j )
-							setCell( j, i, tbl[i*NUM_OF_CELLS+j] );
+					for( var i = 0; i < NUM_OF_CELLS; ++i )
+						for( var j = 0; j < NUM_OF_CELLS; ++j )
+							setCell( j, i, tbl[i * NUM_OF_CELLS + j] );
 			};
 
 			function refresh(){
 				var logic = new Logic(NUM_OF_CELLS, BC, BR);
 				var wrong = logic.check( getCells() );
-				for( var i=0; i < NUM_OF_CELLS; ++i ) {
-					for( var j=0; j < NUM_OF_CELLS; ++j ) {
+				for( let i=0; i < NUM_OF_CELLS; ++i ) {
+					for( let j=0; j < NUM_OF_CELLS; ++j ) {
 						var el = getCellElement( j, i );
 						var n = getCell( j, i );
-						var cdup = wrong.chist[j][n-1] > 1;
-						var rdup = wrong.rhist[i][n-1] > 1;
-						var bdup = wrong.bhist[ (i/BR|0)*BR + (j/BC|0) ][n-1] > 1;
+						const cdup = wrong.chist[j][n-1] > 1;
+						const rdup = wrong.rhist[i][n-1] > 1;
+						const bdup = wrong.bhist[ logic.idxToBlock( j, i ) ][n-1] > 1;
 						if( cdup || rdup || bdup ){// 重複がある場合
 							el.css('color', '#ff0000');
 						}
@@ -223,8 +223,8 @@ window.onload = function(){
 	}
 
 	var ctx = $('#main_canvas').get(0).getContext('2d');
-	for( var i=0; i < NUM_OF_CELLS; ++i ) {
-		for( var j=0; j < NUM_OF_CELLS; ++j ) {
+	for( let i = 0; i < NUM_OF_CELLS; ++i ) {
+		for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 			var cell = $("<div>");
 			var cellid = ui._cellid( j, i );
 			cell.attr({
@@ -307,6 +307,7 @@ window.onload = function(){
 		var selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
 		var dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
 		var isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
+
 		for( let i=0; i <= NUM_OF_CELLS; ++i ) {
 			var keyAngle = i * sAngle;
 			var numchr = (i === 0) ? 'C' : i;
@@ -334,10 +335,11 @@ window.onload = function(){
 				//Render.circle(ctx,keyX,keyY,CELL_SIZ*0.4);ctx.stroke(); //fillに変更したい
 				ui.setCell( c, r, i );
 			}
+
 			if( i === 0 ) {
 				ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
 			}
-			else if( keyboardPossibleList[NUM_OF_CELLS*r+c][i-1] ){
+			else if( keyboardPossibleList[NUM_OF_CELLS * r + c][i-1] ){
 				ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
 			}
 			else {   //入力できない文字を灰色に
@@ -351,15 +353,15 @@ window.onload = function(){
 	var showCountNumbers = function(){
 		var tbl = ui.getCells();
 		var numbers_count = new Array( NUM_OF_CELLS+1 ).fill(0);
-		for( let i=0; i < NUM_OF_CELLS; ++i ) {
-			for( let j=0; j < NUM_OF_CELLS; ++j ) {
-				var val = tbl[ i * NUM_OF_CELLS + j ] - 1;
-				++numbers_count[val + 1];
+		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
+			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
+				var val = tbl[ i * NUM_OF_CELLS + j ] - 1; // そのセルの数字
+				++numbers_count[val + 1]; // その数字の使用個数をインクリメント
 			}
 		}
 		ctx.font = "10px Segoe UI";
 		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
-		for( var i=1; i <= NUM_OF_CELLS; ++i ) {//個数表示
+		for( let i = 1; i <= NUM_OF_CELLS; ++i ) { //個数表示
 			var str = i + " : " + numbers_count[i] + " / " + NUM_OF_CELLS;
 			ctx.fillText( str, 10, HEIGHT - 10 * ( NUM_OF_CELLS - i + 2) );
 				//Render.tally( ctx, numbers_count[i] , i * 20 + 100, HEIGHT - 50 ); // 正の字
@@ -379,8 +381,8 @@ window.onload = function(){
 			"rgba(255, 127, 0, 0.7)"
 		];
 
-		for( var i = 0; i < NUM_OF_CELLS; ++i ) {
-			for( var j = 0; j < NUM_OF_CELLS; ++j ) {
+		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
+			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 				var anstype = predict[ NUM_OF_CELLS * i + j].ansType;
 				var number = predict[ NUM_OF_CELLS * i + j].number;
 				if( number == -1 ) continue;
@@ -402,11 +404,11 @@ window.onload = function(){
     var ctx = cvs.getContext('2d');
 		var fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
-		for( var i=0; i < NUM_OF_CELLS; ++i ) {
-			for( var j=0; j < NUM_OF_CELLS; ++j ) {
+		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
+			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 				var cnt = 0, n;
 				ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
-				for( var k=0; k < NUM_OF_CELLS; ++k ) {
+				for( let k = 0; k < NUM_OF_CELLS; ++k ) {
 					if( !possibleList[NUM_OF_CELLS * i + j][k] ){
 						continue;
 					}
@@ -429,8 +431,8 @@ window.onload = function(){
 		var fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
 
-		var chist=[], rhist=[], bhist=[];
-		for( let i=0; i < NUM_OF_CELLS; ++i ) {
+		var chist = [], rhist = [], bhist = [];
+		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			chist[i] = new Array(NUM_OF_CELLS).fill(0);
 			rhist[i] = new Array(NUM_OF_CELLS).fill(0);
 			bhist[i] = new Array(NUM_OF_CELLS).fill(0);
@@ -493,7 +495,7 @@ window.onload = function(){
 		if(keyCode === keys.ctrl){
 			suggestKeydown();
     }
-		if(keys.left <= keyCode && keyCode <= keys.down){
+		if( keys.left <= keyCode && keyCode <= keys.down ){
 			e.preventDefault();//prevent scroll
 			var dx = 0, dy = 0;
 			if( keyCode === keys.left  ) dx = -1;
@@ -508,7 +510,7 @@ window.onload = function(){
 			$(".selectedCell").removeClass("selectedCell");
 			$("#"+cellid).addClass("selectedCell");
 		}
-		if(keys["0"] <= keyCode && keyCode <= keys["0"]+9){
+		if( keys["0"] <= keyCode && keyCode <= keys["0"] + 9 ){
 			ui.setCell( selectedPos[0], selectedPos[1], keyCode-keys["0"] );
 			ui.refresh();
 		}
@@ -527,8 +529,8 @@ window.onload = function(){
 
 	$('#main_canvas').bind({
 		'touchstart mousedown': function( evt ){
-			var isTouch = evt.type === "touchstart";
-			var touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
+			const isTouch = evt.type === "touchstart";
+			const touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
 			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
 			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
 			var c = ((m_x - MARGIN)/CELL_SIZ + 1|0) - 1, r =  ((m_y - MARGIN)/CELL_SIZ + 1|0) - 1;
@@ -543,7 +545,7 @@ window.onload = function(){
 
 		'touchmove mousemove': function( evt ){
 			evt.preventDefault();
-			var isTouch = evt.type === "touchmove";
+			const isTouch = evt.type === "touchmove";
 			var touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
 			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
 			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
@@ -590,8 +592,8 @@ window.onload = function(){
     	var ctx = cvs.get(0).getContext('2d');
     	ctx.strokeStyle="#ff0000";
     	for(var i=0; i <= 3; ++i){
-    		ctx.moveTo( offsetx + 280*i/3, offsety + 0);
-    		ctx.lineTo( offsetx + 280*i/3, offsety + 280);
+    		ctx.moveTo( offsetx + 280 * i/3, offsety + 0);
+    		ctx.lineTo( offsetx + 280 * i/3, offsety + 280);
     		ctx.moveTo( offsetx + 0      , offsety + 280*i/3);
     		ctx.lineTo( offsetx + 280		 , offsety + 280*i/3);
     	}
@@ -634,8 +636,8 @@ window.onload = function(){
 
 			var dat = ctx.getImageData(60, 10, 280, 280);
 			var inputData = dat.data;
-			for( var y=0; y < dat.height; ++y ){
-				for( var x=0; x < dat.width; ++x ){
+			for( let y = 0; y < dat.height; ++y ){
+				for( let x = 0; x < dat.width; ++x ){
 					var th = 140;
 					var idx = (y * dat.width + x);
 					var valr = inputData[ idx * 4 + 0 ];
@@ -674,8 +676,8 @@ window.onload = function(){
     			if(nn.prepare() == 2){
     				$("#webcam_message").text("");
     			var parr = [];
-					for(var i=0; i<9; ++i){
-						for(var j=0; j<9; ++j){
+					for(let i = 0; i < 9; ++i){
+						for(let j = 0; j < 9; ++j){
 							var square = tctx.getImageData( j * 31+1, i*31+1, 28, 28 );
 							var retarr = NNproc(square, nn);
 							parr[i*9+j] = retarr[0];
@@ -696,7 +698,8 @@ window.onload = function(){
 						if( parr[i] == ans[i] ){
 							++testok;
 						}else{
-							for(var j=0;j < 28*28;++j){
+
+							for(let j=0;j < 28*28;++j){
 								if( parr[i] ){
 									var val1 = 0xff - tmpl.templates[ parr[i]-1 ][j];
 									val1 = val1 > 0 ? 0 : val1;
@@ -707,6 +710,7 @@ window.onload = function(){
 									data1[i][ 4 * j + 2 ] = val1;
 								}
 							}
+
 							$("#webcam_debug_elm").append("<img src='" + imageToDataURL(square_images[i])+"'>");
 						}
 					}
@@ -714,7 +718,7 @@ window.onload = function(){
 					console.log("self test result: " + testok + "/81 ( " + (testok/81*100).toFixed(1)+"% )");
 
 					return;
-    			}else if(nn.prepare()==1){
+    			}else if(nn.prepare() == 1){
     				$("#webcam_message").text("preparing neural network...1/2");
     			}
 
