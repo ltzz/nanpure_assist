@@ -277,14 +277,17 @@ window.onload = function(){
 				ctx.translate( centerX, centerY );
 				const keyLineAngle1 = ( i - 0.5 ) * sAngle;
 				const keyLineAngle2 = ( i + 0.5 ) * sAngle;
+
 				const sindata1 = Math.sin( keyLineAngle1 );
-				const sindata2 = Math.sin( keyLineAngle2 );
 				const cosdata1 = Math.cos( keyLineAngle1 );
-				const cosdata2 = Math.cos( keyLineAngle2 );
+
 				Render.drawLine( ctx,
 					+INNER_RADIUS * sindata1, -INNER_RADIUS * cosdata1,
 					+OUTER_RADIUS * sindata1, -OUTER_RADIUS * cosdata1
 					);
+
+				const sindata2 = Math.sin( keyLineAngle2 );
+				const cosdata2 = Math.cos( keyLineAngle2 );
 				Render.drawLine( ctx,
 					+INNER_RADIUS * sindata2, -INNER_RADIUS * cosdata2,
 					+OUTER_RADIUS * sindata2, -OUTER_RADIUS * cosdata2
@@ -500,10 +503,11 @@ window.onload = function(){
 	$('#main_canvas').bind({
 		'touchstart mousedown': function( evt ){
 			const isTouch = evt.type === "touchstart";
-			const touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
-			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
-			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
-			var c = ((m_x - MARGIN)/CELL_SIZ + 1|0) - 1, r =  ((m_y - MARGIN)/CELL_SIZ + 1|0) - 1;
+			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
+			const m_x = mouseRPoint.mx;
+			const m_y = mouseRPoint.my;
+			var c = ((m_x - MARGIN)/CELL_SIZ + 1|0) - 1
+			var r =  ((m_y - MARGIN)/CELL_SIZ + 1|0) - 1;
 			nowc = c; nowr = r;
 			keyboardPossibleList = logic.suggest( ui.getCells() );
 			if( ui._inrange(nowc, nowr) ) {
@@ -516,9 +520,9 @@ window.onload = function(){
 		'touchmove mousemove': function( evt ){
 			evt.preventDefault();
 			const isTouch = evt.type === "touchmove";
-			const touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
-			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
-			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
+			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
+			const m_x = mouseRPoint.mx;
+			const m_y = mouseRPoint.my;
 
 			if( nowc === null || nowr === null || !(ui._inrange(nowc, nowr)) ){
 				return;
@@ -533,9 +537,10 @@ window.onload = function(){
 		},
 		'touchend mouseup': function( evt ){
 			const isTouch = evt.type === "touchend";
-			const touchEvent = isTouch ? evt.originalEvent.changedTouches[0] : null;
-			var m_x = ( isTouch ? touchEvent.pageX　:　evt.pageX ) - $('#main_canvas').offset().left;
-			var m_y = ( isTouch ? touchEvent.pageY　:　evt.pageY ) - $('#main_canvas').offset().top;
+			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
+			const m_x = mouseRPoint.mx;
+			const m_y = mouseRPoint.my;
+
 			Render.clearScreen( ctx );
 
 			if(document.getElementById("single_number_keyboard").checked){
