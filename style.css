@@ -1,0 +1,125 @@
+body{
+	font-family: Meiryo UI;
+}
+
+#main_canvas {
+	border: 1px solid #000000;
+	position: relative;
+	top: 0;
+	left: 0;
+	z-index: 3;
+}
+
+.cell{
+	text-align: center;
+	font-family: Segoe UI, Meiryo UI;
+	border: 1px solid #000000;
+	position: absolute;
+	padding: 0 0;
+	box-sizing: border-box;
+}
+
+.cell_left{
+	border-left: 3px solid #000000;
+}
+
+.cell_top{
+	border-top: 3px solid #000000;
+}
+
+.cell_right{
+	border-right: 3px solid #000000;
+}
+
+.cell_bottom{
+	border-bottom: 3px solid #000000;
+}
+
+.cell.selectedCell{
+	border: 3px solid #ff0000;
+}
+
+.noselectable{
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	-ms-user-select: none;
+	-o-user-select: none;
+}
+
+.number_select_key{
+	width: 40px;
+	height: 40px;
+	line-height: 40px; /* 上下中央揃え用 */
+	padding: 5px 5px;
+	float: left;
+	text-align: center;
+	border-radius: 50%;
+	font-family: Meiryo UI;
+	border: 1px solid #666666;
+}
+
+.flat_button{
+	border: 1px solid #666666;
+	background-color: #99ccff;
+	float:left;
+	width:198px;
+	height:50px;
+	line-height: 50px;
+	text-align: center;
+	font-family: Meiryo UI;
+	cursor: pointer;
+}
+
+.tab_title_parent{
+	margin-top: 10px;
+}
+
+.tab_content_parent{
+	display: table;
+    border-collapse: separate;  /* セル間隔 */
+    border-spacing: 2px 5px;  /* 左右 上下 */
+}
+
+.tab_title{
+	float: left;
+	width: 100px;
+	border: 1px solid #cccccc;
+	height: 20px;
+	line-height: 20px;
+	text-align: center;
+	cursor: pointer;
+}
+
+.tab_content{
+	position: absolute;
+	display: table-cell;
+	width: 500px;
+	height: 700px;
+	border: 1px solid #cccccc;
+	background-color: #ffffff;
+	z-index: 100;
+}
+
+.gf_field{
+	position: absolute;
+	top: 0px; left: 0px;
+	border: none;
+	border-collapse: collapse;
+}
+
+.gf_field td{
+	width:33px;
+	height: 33px;
+	box-sizing:border-box;
+	border: 1px solid #000000;
+}
+
+/*
+//複数クラスで設定するように書き換え？
+.grid0_0.connected,
+.grid0_2.connected,
+.grid2_0.connected,
+.grid2_2.connected{
+	background-color: #ffffcc;
+}*/

@@ -1,3 +1,15 @@
+/**
+ * @fileoverview 計算用ロジック
+ */
+
+
+/**
+ * Logic - セル数にかかわらず一般化できるロジック
+ *
+ * @param  {type} NUM_OF_CELLS 1行、1列、1ブロックのセル数
+ * @param  {type} BC           ブロックの横のセル数
+ * @param  {type} BR           ブロックの縦のセル数
+ */
 function Logic(NUM_OF_CELLS, BC, BR) {
   this.NUM_OF_CELLS = NUM_OF_CELLS;
   this.BC = BC;
@@ -16,22 +28,22 @@ function Logic(NUM_OF_CELLS, BC, BR) {
     var chist = [],
       rhist = [],
       bhist = [];
-    for (var i = 0; i < NUM_OF_CELLS; ++i) {
+    for (let i = 0; i < NUM_OF_CELLS; ++i) {
       //chist[i] = new Array(NUM_OF_CELLS).fill(0);
       //rhist[i] = new Array(NUM_OF_CELLS).fill(0);
       //bhist[i] = new Array(NUM_OF_CELLS).fill(0);
       chist[i] = new Array(NUM_OF_CELLS);
       rhist[i] = new Array(NUM_OF_CELLS);
       bhist[i] = new Array(NUM_OF_CELLS);
-      for (var j = 0; j < NUM_OF_CELLS; ++j) {
+      for (let j = 0; j < NUM_OF_CELLS; ++j) {
         chist[i][j] = 0;
         bhist[i][j] = 0;
         rhist[i][j] = 0;
       }
     }
-    var maxcnt = 0;
-    for (var r = 0; r < NUM_OF_CELLS; ++r) {
-      for (var c = 0; c < NUM_OF_CELLS; ++c) {
+    let maxcnt = 0;
+    for (let r = 0; r < NUM_OF_CELLS; ++r) {
+      for (let c = 0; c < NUM_OF_CELLS; ++c) {
         var val = arr[r * NUM_OF_CELLS + c] - 1;
         if (val >= 0) {
           maxcnt = Math.max(++chist[c][val], maxcnt);
@@ -77,16 +89,16 @@ function Logic(NUM_OF_CELLS, BC, BR) {
   }
   this.suggest = function(tbl) {
     var possibleList = new Array(NUM_OF_CELLS * NUM_OF_CELLS);
-    for (var i = 0; i < NUM_OF_CELLS; ++i) {
-      for (var j = 0; j < NUM_OF_CELLS; ++j) {
+    for (let i = 0; i < NUM_OF_CELLS; ++i) {
+      for (let j = 0; j < NUM_OF_CELLS; ++j) {
         possibleList[i * NUM_OF_CELLS + j] = new Array(NUM_OF_CELLS).fill(true);
         /*possibleList[i*NUM_OF_CELLS+j] = [];
         for( var k=0; k<NUM_OF_CELLS; ++k ) possibleList[i*NUM_OF_CELLS+j][k] = true;*/
       }
     }
 
-    for (var r = 0; r < NUM_OF_CELLS; ++r) {
-      for (var c = 0; c < NUM_OF_CELLS; ++c) {
+    for (let r = 0; r < NUM_OF_CELLS; ++r) {
+      for (let c = 0; c < NUM_OF_CELLS; ++c) {
         if (tbl[r * NUM_OF_CELLS + c]) {
           var val = tbl[r * NUM_OF_CELLS + c] - 1;
           var br = r / BR | 0,
@@ -128,8 +140,8 @@ function Logic(NUM_OF_CELLS, BC, BR) {
     }
 
     var result = [];
-    for (var i = 0; i < NUM_OF_CELLS; ++i) {
-      for (var j = 0; j < NUM_OF_CELLS; ++j) {
+    for (let i = 0; i < NUM_OF_CELLS; ++i) {
+      for (let j = 0; j < NUM_OF_CELLS; ++j) {
         result[NUM_OF_CELLS * i + j] = {
           "number": -1,
           "ansType": -1
@@ -183,20 +195,20 @@ function Logic(NUM_OF_CELLS, BC, BR) {
       */
     }
 
-    var ok = true;
+    let ok = true;
     var turn = 0;
     do {
       ok = true;
-      for (var num = 0; num < NUM_OF_CELLS; ++num) {
-        for (var i = 0; i < BR; ++i) {
-          for (var j = 0; j < BC; ++j) {
+      for (let num = 0; num < NUM_OF_CELLS; ++num) {
+        for (let i = 0; i < BR; ++i) {
+          for (let j = 0; j < BC; ++j) {
             var minx = NUM_OF_CELLS,
               miny = NUM_OF_CELLS;
             var maxx = 0,
               maxy = 0;
             //各ブロックについて
-            for (var k = 0; k < BC; ++k) {
-              for (var l = 0; l < BR; ++l) {
+            for (let k = 0; k < BC; ++k) {
+              for (let l = 0; l < BR; ++l) {
                 var cy = i * BC + k,
                   cx = j * BR + l;
                 if (possibleList[cy * NUM_OF_CELLS + cx][num] && tbl[cy * NUM_OF_CELLS + cx] == 0) {
@@ -220,7 +232,7 @@ function Logic(NUM_OF_CELLS, BC, BR) {
             if (minx != maxx && miny == maxy) {
               console.log("x = " + [minx, maxx].join(","), "y = " + maxy, "num=" + (num + 1))
               row_possible[maxy][num] = false;
-              for (var p = 0; p < NUM_OF_CELLS; ++p) {
+              for (let p = 0; p < NUM_OF_CELLS; ++p) {
                 if (minx <= p && p <= maxx) continue;
                 possibleList[maxy * NUM_OF_CELLS + p][num] = false;
                 ok = false;
@@ -242,8 +254,8 @@ function Logic(NUM_OF_CELLS, BC, BR) {
     var ans1 = this.PL2Ans(possibleList, tbl);
     var ans2 = this.PL2Ans(possibleList2, tbl);
 
-    for (var i = 0; i < NUM_OF_CELLS; ++i) {
-      for (var j = 0; j < NUM_OF_CELLS; ++j) {
+    for (let i = 0; i < NUM_OF_CELLS; ++i) {
+      for (let j = 0; j < NUM_OF_CELLS; ++j) {
         if (ans1[NUM_OF_CELLS * i + j].ansType == -1) continue;
         if (ans2[NUM_OF_CELLS * i + j].ansType == -1) continue;
         if (ans1[NUM_OF_CELLS * i + j].ansType !=

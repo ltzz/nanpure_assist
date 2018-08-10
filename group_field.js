@@ -5,11 +5,11 @@ var GFBoardWidth = 100;
 
 function GF_Init() {
 
-  var table = function(x) {
-    var ret = "<table class='gf_field'>";
-    for (var i = 0; i < 3; ++i) {
+  const table = (x) => {
+    let ret = "<table class='gf_field'>";
+    for (let i = 0; i < 3; ++i) {
       ret += "<tr>";
-      for (var j = 0; j < 3; ++j) {
+      for (let j = 0; j < 3; ++j) {
         if (i == 0 && j == 0) ret += "<td>" + x + "</td>";
         else ret += "<td class='grid" + i + "_" + j + "'><br></td>";
       }
@@ -30,7 +30,7 @@ function GF_Init() {
       connect: [],
       board: []
     };
-    for (var i = 0; i < 9; ++i) {
+    for (let i = 0; i < 9; ++i) {
       newBoard.board[i] = new Array(9).fill(0);
     }
 
@@ -43,7 +43,7 @@ function GF_Init() {
       style: "position:absolute;top:100px;left:200px;width:" + GFBoardWidth + "px;height:" + GFBoardWidth + "px;" +
         "border:none;box-sizing:border-box;",
       mousedown: function(evt) {
-        var isTouch = evt.type === "touchstart";
+        const isTouch = evt.type === "touchstart";
         var evt_parent_id = $(evt.target).parents("div")[0].id;
         var evt_parent = $("#" + evt_parent_id);
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
@@ -54,12 +54,12 @@ function GF_Init() {
         var b_x = pageX - evt_parent.offset().left;
         var b_y = pageY - evt_parent.offset().top;
 
-        var idx = evt_parent.attr("id").substr(5) | 0;
+        const idx = evt_parent.attr("id").substr(5) | 0;
         fields[idx].dragoffsetx = b_x;
         fields[idx].dragoffsety = b_y;
         fields[idx].dragging = true;
 
-        for (var i in fields[idx].connect) { // 結合相手から自分を消す
+        for (let i in fields[idx].connect) { // 結合相手から自分を消す
           fields[i].connect.splice(idx, 1);
         }
         fields[idx].connect = [];
@@ -87,7 +87,7 @@ function GF_Init() {
         }
       },
       mouseup: function(evt) {
-        var isTouch = evt.type === "touchend";
+        const isTouch = evt.type === "touchend";
         var evt_parent_id = $(evt.target).parents("div")[0].id;
         var evt_parent = $("#" + evt_parent_id);
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
@@ -117,7 +117,7 @@ function GF_Init() {
         };
         var conclass2 = ["grid0_0", "grid0_2", "grid2_0", "grid2_2"];
 
-        for (var i = 0; i < fields.length; ++i) {
+        for (let i = 0; i < fields.length; ++i) {
           var fieldx = $("#field" + i);
           if (i == idx) continue;
           var dx1 = fieldx.offset().left + 2 * GFBoardWidth / 3;
@@ -155,7 +155,7 @@ function GF_Init() {
             fields[idx].connect[i] = con.rightbottom;
           }
         }
-        for (var i = 0; i < fields.length; ++i) {
+        for (let i = 0; i < fields.length; ++i) {
           fields[i].selected = false;
           $("#field" + i + " ." + conclass.rightbottom).css("background-color", "none");
           $("#field" + i + " ." + conclass.righttop).css("background-color", "none");
@@ -168,7 +168,7 @@ function GF_Init() {
             $("#field" + i + " ." + conclass2[connect]).css("background-color", "#ffffcc");
             var board1 = fields[i].board;
             var board2 = fields[j].board;
-            var con_table = [
+            const con_table = [
               [0, 0, 6, 6],
               [6, 0, 0, 6],
               [6, 6, 6, 0],
@@ -205,16 +205,16 @@ function GF_Init() {
       selectedBoard = 0;
       BoardCnt -= 1;
       //clearBoard();
-      for (var i in fields) {
+      for (let i in fields) {
         fields[i].dragging = false;
       }
     }
   });
 
   $('#place_board').mouseup(function(evt) {
-    for (var i = 0; i < fields.length; ++i) {
+    for (let i = 0; i < fields.length; ++i) {
       if (!fields[i].dragging) continue;
-      var isTouch = evt.type === "touchend";
+      const isTouch = evt.type === "touchend";
       var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
       var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
       var m_x = pageX - $('#place_board').offset().left;
@@ -230,9 +230,9 @@ function GF_Init() {
   });
 
   $('#place_board').mousemove(function(evt) {
-    for (var i = 0; i < fields.length; ++i) {
+    for (let i = 0; i < fields.length; ++i) {
       if (!fields[i].dragging) continue;
-      var isTouch = evt.type === "touchend";
+      const isTouch = evt.type === "touchend";
       var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
       var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
       var m_x = pageX - $('#place_board').offset().left;

@@ -6,134 +6,7 @@
 <meta name="viewport" content="width=480,initial-scale=1.0,
 maximum-scale=1.0, minimum-scale=1.0">
 
-<style>
-body{
-	font-family: Meiryo UI;
-}
-
-#main_canvas {
-	border: 1px solid #000000;
-	position: relative;
-	top: 0;
-	left: 0;
-	z-index: 3;
-}
-
-.cell{
-	text-align: center;
-	font-family: Segoe UI, Meiryo UI;
-	border: 1px solid #000000;
-	position: absolute;
-	padding: 0 0;
-	box-sizing: border-box;
-}
-
-.cell_left{
-	border-left: 3px solid #000000;
-}
-
-.cell_top{
-	border-top: 3px solid #000000;
-}
-
-.cell_right{
-	border-right: 3px solid #000000;
-}
-
-.cell_bottom{
-	border-bottom: 3px solid #000000;
-}
-
-.cell.selectedCell{
-	border: 3px solid #ff0000;
-}
-
-.noselectable{
-	user-select: none;
-	-webkit-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	-o-user-select: none;
-}
-
-.number_select_key{
-	width: 40px;
-	height: 40px;
-	line-height: 40px; /* 上下中央揃え用 */
-	padding: 5px 5px;
-	float: left;
-	text-align: center;
-	border-radius: 50%;
-	font-family: Meiryo UI;
-	border: 1px solid #666666;
-}
-
-.flat_button{
-	border: 1px solid #666666;
-	background-color: #99ccff;
-	float:left;
-	width:198px;
-	height:50px;
-	line-height: 50px;
-	text-align: center;
-	font-family: Meiryo UI;
-	cursor: pointer;
-}
-
-.tab_title_parent{
-	margin-top: 10px;
-}
-
-.tab_content_parent{
-	display: table;
-    border-collapse: separate;  /* セル間隔 */
-    border-spacing: 2px 5px;  /* 左右 上下 */
-}
-
-.tab_title{
-	float: left;
-	width: 100px;
-	border: 1px solid #cccccc;
-	height: 20px;
-	line-height: 20px;
-	text-align: center;
-	cursor: pointer;
-}
-
-.tab_content{
-	position: absolute;
-	display: table-cell;
-	width: 500px;
-	height: 700px;
-	border: 1px solid #cccccc;
-	background-color: #ffffff;
-	z-index: 100;
-}
-
-.gf_field{
-	position: absolute;
-	top: 0px; left: 0px;
-	border: none;
-	border-collapse: collapse;
-}
-
-.gf_field td{
-	width:33px;
-	height: 33px;
-	box-sizing:border-box;
-	border: 1px solid #000000;
-}
-
-/*
-//複数クラスで設定するように書き換え？
-.grid0_0.connected,
-.grid0_2.connected,
-.grid2_0.connected,
-.grid2_2.connected{
-	background-color: #ffffcc;
-}*/
-
-</style>
+<link rel="stylesheet" type="text/css" href="./style.css">
 <!-- <script src="http://ajax.googleapis.com/ajax/libs/jquery/2.0.3/jquery.min.js"></script> -->
 <script src="./jquery-2.1.0.min.js"></script>
 <script src="./tab.js"></script>
@@ -166,16 +39,17 @@ body{
 <script src="./group_field.js"></script>
 <script src="./testNN.js"></script>
 <script src="./tmpl.js"></script>
+<script src="./etc.js"></script>
 <script src="./NNproc.js"></script>
 <script src="./dpll.js"></script>
 <script>
 
-var BC = 3, BR = 3;
-var NUM_OF_CELLS = BC * BR;
-var WIDTH = 480;
-var HEIGHT = 480;
-var MARGIN = 60;
-var CELL_SIZ = ( WIDTH - MARGIN * 2 ) / NUM_OF_CELLS;
+const BC = 3, BR = 3;
+const NUM_OF_CELLS = BC * BR;
+const WIDTH = 480;
+const HEIGHT = 480;
+const MARGIN = 60;
+const CELL_SIZ = ( WIDTH - MARGIN * 2 ) / NUM_OF_CELLS;
 
 var selectedPos = [0,0];
 
@@ -255,7 +129,7 @@ window.onload = function(){
 						var n = getCell( j, i );
 						var cdup = wrong.chist[j][n-1] > 1;
 						var rdup = wrong.rhist[i][n-1] > 1;
-						var bdup = wrong.bhist[(i/BR|0)*BR+(j/BC|0)][n-1] > 1;
+						var bdup = wrong.bhist[ (i/BR|0)*BR + (j/BC|0) ][n-1] > 1;
 						if( cdup || rdup || bdup ){// 重複がある場合
 							el.css('color', '#ff0000');
 						}
@@ -269,8 +143,8 @@ window.onload = function(){
 
 			function switchBoard(bnum){
 				selectedBoard = bnum;
-				for( var i=0; i<NUM_OF_CELLS; ++i ){
-					for( var j=0; j<NUM_OF_CELLS; ++j ){
+				for( var i　=　0; i　<　NUM_OF_CELLS; ++i ){
+					for( var j　=　0; j　<　NUM_OF_CELLS; ++j ){
 					var num = fields[selectedBoard].board[i][j];
 						$( "#" + _cellid( j, i ) ).html( num ? num : "<br>" );
 					}
@@ -278,8 +152,8 @@ window.onload = function(){
 			};
 
 			function clearBoard(){
-				for( var i=0; i < NUM_OF_CELLS; ++i ){
-					for( var j=0; j < NUM_OF_CELLS; ++j ){
+				for( var i　=　0; i < NUM_OF_CELLS; ++i ){
+					for( var j　=　0; j < NUM_OF_CELLS; ++j ){
 						setCell( j, i, 0 );
 					}
 				}
@@ -349,8 +223,8 @@ window.onload = function(){
 	}
 
 	var ctx = $('#main_canvas').get(0).getContext('2d');
-	for( var i=0; i<NUM_OF_CELLS; ++i ) {
-		for( var j=0; j<NUM_OF_CELLS; ++j ) {
+	for( var i=0; i < NUM_OF_CELLS; ++i ) {
+		for( var j=0; j < NUM_OF_CELLS; ++j ) {
 			var cell = $("<div>");
 			var cellid = ui._cellid( j, i );
 			cell.attr({
@@ -433,7 +307,7 @@ window.onload = function(){
 		var selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
 		var dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
 		var isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
-		for( var i=0; i <= NUM_OF_CELLS; ++i ) {
+		for( let i=0; i <= NUM_OF_CELLS; ++i ) {
 			var keyAngle = i * sAngle;
 			var numchr = (i === 0) ? 'C' : i;
 			var chrWidth = ctx.measureText( numchr ).width;
@@ -442,12 +316,12 @@ window.onload = function(){
 			var keyX = centerX + keyRX, keyY = centerY + keyRY;
 			if( selectedNumber === i && isInRange) {
 				ctx.translate( centerX, centerY );
-				var keyLineAngle1 = ( i - 0.5 ) * sAngle;
-				var keyLineAngle2 = ( i + 0.5 ) * sAngle;
-				var sindata1 = Math.sin( keyLineAngle1 );
-				var sindata2 = Math.sin( keyLineAngle2 );
-				var cosdata1 = Math.cos( keyLineAngle1 );
-				var cosdata2 = Math.cos( keyLineAngle2 );
+				const keyLineAngle1 = ( i - 0.5 ) * sAngle;
+				const keyLineAngle2 = ( i + 0.5 ) * sAngle;
+				const sindata1 = Math.sin( keyLineAngle1 );
+				const sindata2 = Math.sin( keyLineAngle2 );
+				const cosdata1 = Math.cos( keyLineAngle1 );
+				const cosdata2 = Math.cos( keyLineAngle2 );
 				Render.drawLine( ctx,
 					+INNER_RADIUS * sindata1, -INNER_RADIUS * cosdata1,
 					+OUTER_RADIUS * sindata1, -OUTER_RADIUS * cosdata1
@@ -476,9 +350,9 @@ window.onload = function(){
 
 	var showCountNumbers = function(){
 		var tbl = ui.getCells();
-		var numbers_count = new Array(NUM_OF_CELLS+1).fill(0);
-		for( var i=0; i < NUM_OF_CELLS; ++i ) {
-			for( var j=0; j < NUM_OF_CELLS; ++j ) {
+		var numbers_count = new Array( NUM_OF_CELLS+1 ).fill(0);
+		for( let i=0; i < NUM_OF_CELLS; ++i ) {
+			for( let j=0; j < NUM_OF_CELLS; ++j ) {
 				var val = tbl[ i * NUM_OF_CELLS + j ] - 1;
 				++numbers_count[val + 1];
 			}
@@ -505,11 +379,11 @@ window.onload = function(){
 			"rgba(255, 127, 0, 0.7)"
 		];
 
-		for( var i=0; i < NUM_OF_CELLS; ++i ) {
-			for( var j=0; j < NUM_OF_CELLS; ++j ) {
-				var anstype = predict[NUM_OF_CELLS*i+j].ansType;
-				var number = predict[NUM_OF_CELLS*i+j].number;
-				if(number == -1) continue;
+		for( var i = 0; i < NUM_OF_CELLS; ++i ) {
+			for( var j = 0; j < NUM_OF_CELLS; ++j ) {
+				var anstype = predict[ NUM_OF_CELLS * i + j].ansType;
+				var number = predict[ NUM_OF_CELLS * i + j].number;
+				if( number == -1 ) continue;
 				ctx.fillStyle = colors[anstype];
 				console.log( number );
 				ctx.fillText( number, ui.getCellLeft( j ) + CELL_SIZ/2, ui.getCellTop( i ) + CELL_SIZ/2 );
@@ -556,7 +430,7 @@ window.onload = function(){
 		ctx.font = fsize + "px Meiryo UI";
 
 		var chist=[], rhist=[], bhist=[];
-		for( var i=0; i<NUM_OF_CELLS; ++i ) {
+		for( let i=0; i < NUM_OF_CELLS; ++i ) {
 			chist[i] = new Array(NUM_OF_CELLS).fill(0);
 			rhist[i] = new Array(NUM_OF_CELLS).fill(0);
 			bhist[i] = new Array(NUM_OF_CELLS).fill(0);
@@ -564,22 +438,22 @@ window.onload = function(){
 
 
 		var possibleList = logic.suggest(tbl);
-		for( var r=0; r < NUM_OF_CELLS; ++r ) {//行，列，ブロックごとにヒストグラムを作る
-			for( var c=0; c < NUM_OF_CELLS; ++c ) {
-				for( var num=0; num < NUM_OF_CELLS; ++num){
-					if( !possibleList[NUM_OF_CELLS*r+c][num] ) continue;
-					if( tbl[r*NUM_OF_CELLS+c] == 0 ){
+		for( let r = 0; r < NUM_OF_CELLS; ++r ) {//行，列，ブロックごとにヒストグラムを作る
+			for( let c = 0; c < NUM_OF_CELLS; ++c ) {
+				for( let num = 0; num < NUM_OF_CELLS; ++num){
+					if( !possibleList[ NUM_OF_CELLS * r + c ][num] ) continue;
+					if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){
 						++chist[c][num];
 						++rhist[r][num];
-						++bhist[(r/BR|0)*BR + (c/BC|0)][num];
+						++bhist[ (r/BR|0) * BR + (c/BC|0) ][num];
 					}
 				}
 			}
 		}
 
-		for( var j=0; j < NUM_OF_CELLS; ++j ) {
+		for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 			ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
-			for( var k=0; k < NUM_OF_CELLS; ++k ) {
+			for( let k = 0; k < NUM_OF_CELLS; ++k ) {
 				var dx = ( fsize + 1 ) * ( k % BC | 0 );
 				var dy = ( fsize + 1 ) * ( k / BC | 0 );
 				if( chist[j][k] ) {
@@ -604,7 +478,7 @@ window.onload = function(){
 		ui.setCells( logic.solver( tbl ) );
 	});
 
-	var keys = {
+	const keys = {
 		"ctrl": 17,
 		"left": 37,
 		"up":		38,
@@ -622,10 +496,10 @@ window.onload = function(){
 		if(keys.left <= keyCode && keyCode <= keys.down){
 			e.preventDefault();//prevent scroll
 			var dx = 0, dy = 0;
-			if(keyCode === keys.left) dx = -1;
-			if(keyCode === keys.right) dx = 1;
-			if(keyCode === keys.up) dy = -1;
-			if(keyCode === keys.down) dy = 1;
+			if( keyCode === keys.left  ) dx = -1;
+			if( keyCode === keys.right ) dx = 1;
+			if( keyCode === keys.up    ) dy = -1;
+			if( keyCode === keys.down  ) dy = 1;
 			if( ui._inrange( selectedPos[0] + dx, selectedPos[1] + dy ) ){
 				selectedPos[0] += dx;
 				selectedPos[1] += dy;
@@ -715,11 +589,11 @@ window.onload = function(){
     	var cvs = $("#video_covering");
     	var ctx = cvs.get(0).getContext('2d');
     	ctx.strokeStyle="#ff0000";
-    	for(var i=0;i<=3;++i){
-    		ctx.moveTo(offsetx+280*i/3, offsety+0);
-    		ctx.lineTo(offsetx+280*i/3, offsety+280);
-    		ctx.moveTo(offsetx+0, offsety+280*i/3);
-    		ctx.lineTo(offsetx+280, offsety+280*i/3);
+    	for(var i=0; i <= 3; ++i){
+    		ctx.moveTo( offsetx + 280*i/3, offsety + 0);
+    		ctx.lineTo( offsetx + 280*i/3, offsety + 280);
+    		ctx.moveTo( offsetx + 0      , offsety + 280*i/3);
+    		ctx.lineTo( offsetx + 280		 , offsety + 280*i/3);
     	}
     	ctx.stroke();
     	console.log("Video Capture Started");
@@ -739,7 +613,8 @@ window.onload = function(){
 
     var imageToDataURL = function(a){
     	var canvas = document.createElement("canvas");
-    	canvas.width = a.width; canvas.height = a.height;
+    	canvas.width  = a.width;
+			canvas.height = a.height;
     	var ctx = canvas.getContext("2d");
     	ctx.putImageData(a, 0, 0);
     	return canvas.toDataURL('image/png');
@@ -752,14 +627,15 @@ window.onload = function(){
     	//リサイズの必要あり
 		if (localMediaStream) {
 			var cvs = $("<canvas>").get(0);
-			cvs.width=400;cvs.height=300;
+			cvs.width = 400;
+			cvs.height = 300;
 			var ctx = cvs.getContext('2d');
 			ctx.drawImage(video, 0, 0, cvs.width, cvs.height);
 
 			var dat = ctx.getImageData(60, 10, 280, 280);
 			var inputData = dat.data;
-			for(var y=0; y < dat.height; ++y){
-				for(var x=0; x < dat.width; ++x){
+			for( var y=0; y < dat.height; ++y ){
+				for( var x=0; x < dat.width; ++x ){
 					var th = 140;
 					var idx = (y * dat.width + x);
 					var valr = inputData[ idx * 4 + 0 ];
@@ -794,17 +670,17 @@ window.onload = function(){
     		var NNloadCnt = 0;
     		var NNload = function(){
     			++NNloadCnt;
-    			if(NNloadCnt == 1000) return;
+    			if( NNloadCnt == 1000 ) return;
     			if(nn.prepare() == 2){
     				$("#webcam_message").text("");
     			var parr = [];
 					for(var i=0; i<9; ++i){
 						for(var j=0; j<9; ++j){
-							var square = tctx.getImageData(j*31+1, i*31+1, 28, 28);
+							var square = tctx.getImageData( j * 31+1, i*31+1, 28, 28 );
 							var retarr = NNproc(square, nn);
 							parr[i*9+j] = retarr[0];
-							square_images[i*9+j] = retarr[1];
-							dbgx.putImageData(retarr[1],j*33+1,i*33+1);
+							square_images[ i * 9 + j ] = retarr[1];
+							dbgx.putImageData( retarr[1], j*33+1, i*33+1 );
 						}
 					}
 					console.log((new Date).getTime() - timer_st + "ms");
@@ -812,30 +688,30 @@ window.onload = function(){
 					var tmpl = new TempleteMatch("Arial");//test you
 					var ans = ui.getCells();
 					var testok = 0;
-					for(var i=0;i < 9*9;++i){
-						var x = i%9, y = i/9|0;
+					for(var i=0; i < 9 * 9; ++i){
+						var x = i % 9, y = i / 9 |0;
 						tctx.font = "16px sans-serif";
 						tctx.strokeStyle = "rgba(255,200,60,0.8)";
 						tctx.strokeText(parr[i], x*31+1 +5,y*31+1 +10);
-						if(parr[i] == ans[i]){
+						if( parr[i] == ans[i] ){
 							++testok;
 						}else{
 							for(var j=0;j < 28*28;++j){
-								if(parr[i]){
-									var val1 = 0xff - tmpl.templates[parr[i]-1][j];
-									val1 = val1>0?0:val1;
-									var val2 = val1>0xc0?0:square_images[i][4*j+0];
+								if( parr[i] ){
+									var val1 = 0xff - tmpl.templates[ parr[i]-1 ][j];
+									val1 = val1 > 0 ? 0 : val1;
+									var val2 = val1 > 0xc0 ? 0 : square_images[i][ 4 * j + 0 ];
 									var data1 = square_images;
-									data1[i][4*j+0] = val2;
-									data1[i][4*j+1] = val2;
-									data1[i][4*j+2] = val1;
+									data1[i][ 4 * j + 0 ] = val2;
+									data1[i][ 4 * j + 1 ] = val2;
+									data1[i][ 4 * j + 2 ] = val1;
 								}
 							}
-							$("#webcam_debug_elm").append("<img src='"+imageToDataURL(square_images[i])+"'>");
+							$("#webcam_debug_elm").append("<img src='" + imageToDataURL(square_images[i])+"'>");
 						}
 					}
 					ui.setCells( parr );
-					console.log("self test result: "+testok+"/81 ( "+(testok/81*100).toFixed(1)+"% )");
+					console.log("self test result: " + testok + "/81 ( " + (testok/81*100).toFixed(1)+"% )");
 
 					return;
     			}else if(nn.prepare()==1){
