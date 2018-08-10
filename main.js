@@ -1,10 +1,4 @@
 
-const BC = 3, BR = 3;
-const NUM_OF_CELLS = BC * BR;
-const WIDTH = 480;
-const HEIGHT = 480;
-const MARGIN = 60;
-const CELL_SIZ = ( WIDTH - MARGIN * 2 ) / NUM_OF_CELLS;
 
 var selectedPos = [0,0];
 
@@ -22,7 +16,7 @@ var singleNumberKeyboard_generateKey = function(){
 
 var singleNumberKeyboard_selectKey = function(num){
 	singleNumberKeyboard_currentNumber = num;
-	for(var i=0; i < NUM_OF_CELLS + 1; ++i){
+	for(let i=0; i < NUM_OF_CELLS + 1; ++i){
 		document.getElementById("key"+i).style.backgroundColor = "#ffffff";
 	}
 	document.getElementById("key"+num).style.backgroundColor = "#cccccc";
@@ -58,7 +52,7 @@ window.onload = function(){
 				var tbl = new Array( NUM_OF_CELLS * NUM_OF_CELLS );
 				for( let i = 0; i < NUM_OF_CELLS; ++i ){
 					for( let j = 0; j < NUM_OF_CELLS; ++j ){
-						tbl[i*NUM_OF_CELLS+j] = getCell( j, i );
+						tbl[i * NUM_OF_CELLS + j] = getCell( j, i );
 					}
 				}
 				return tbl;
@@ -100,7 +94,7 @@ window.onload = function(){
 				selectedBoard = bnum;
 				for( let i　=　0; i　<　NUM_OF_CELLS; ++i ){
 					for( let j　=　0; j　<　NUM_OF_CELLS; ++j ){
-					var num = fields[selectedBoard].board[i][j];
+					const num = fields[selectedBoard].board[i][j];
 						$( "#" + _cellid( j, i ) ).html( num ? num : "<br>" );
 					}
 				}
@@ -115,7 +109,7 @@ window.onload = function(){
 			};
 
 			function exportBoard(){
-				var tbl = getCells();
+				const tbl = getCells();
 				$("textarea").val( tbl.join(',') );
 			};
 
@@ -248,10 +242,15 @@ window.onload = function(){
 		Render.clearScreen( ctx );
 		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
 		ctx.fillStyle = "rgba(255,255,255,0.9)";
-		Render.circle( ctx, centerX, centerY, OUTER_RADIUS ); ctx.fill(); ctx.stroke();
+		Render.circle( ctx, centerX, centerY, OUTER_RADIUS );
+    ctx.fill();
+    ctx.stroke();
+
 		ctx.globalCompositeOperation = "xor"; //重なって描画される時に透明になる
 		ctx.fillStyle = "rgba(255,255,255,1.0)";
-		Render.circle( ctx, centerX, centerY, INNER_RADIUS ); ctx.fill(); ctx.stroke();
+		Render.circle( ctx, centerX, centerY, INNER_RADIUS );
+    ctx.fill();
+    ctx.stroke();
 
 		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
 		ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
@@ -265,12 +264,12 @@ window.onload = function(){
 
 		for( let i = 0; i <= NUM_OF_CELLS; ++i ) {
 			var keyAngle = i * sAngle;
-			var numchr = (i === 0) ? 'C' : i;
+			const numchr = (i === 0) ? 'C' : i;
 			var chrWidth = ctx.measureText( numchr ).width;
 			var keyRX =  KEY_RADIUS * Math.sin( keyAngle );
 			var keyRY = -KEY_RADIUS * Math.cos( keyAngle );
 			var keyX = centerX + keyRX, keyY = centerY + keyRY;
-			if( selectedNumber === i && isInRange) {
+			if( selectedNumber === i && isInRange ) {
 				ctx.translate( centerX, centerY );
 				const keyLineAngle1 = ( i - 0.5 ) * sAngle;
 				const keyLineAngle2 = ( i + 0.5 ) * sAngle;
@@ -358,7 +357,7 @@ window.onload = function(){
     cvs.width = WIDTH;
 		cvs.height = HEIGHT;
     var ctx = cvs.getContext('2d');
-		var fsize = ( CELL_SIZ * 0.7 / BC |0 );
+		const fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
@@ -385,7 +384,7 @@ window.onload = function(){
     var cvs = document.createElement('canvas');
     cvs.width = WIDTH; cvs.height = HEIGHT;
     var ctx = cvs.getContext('2d');
-		var fsize = ( CELL_SIZ * 0.7 / BC |0 );
+		const fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		ctx.font = fsize + "px Meiryo UI";
 
 		let chist = [], rhist = [], bhist = [];
@@ -396,12 +395,13 @@ window.onload = function(){
 		}
 
 
-		var possibleList = logic.suggest(tbl);
+		const possibleList = logic.suggest(tbl);
 		for( let r = 0; r < NUM_OF_CELLS; ++r ) {//行，列，ブロックごとにヒストグラムを作る
 			for( let c = 0; c < NUM_OF_CELLS; ++c ) {
 				for( let num = 0; num < NUM_OF_CELLS; ++num ){
 					if( !possibleList[ NUM_OF_CELLS * r + c ][num] ) continue;
-					if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){
+					if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){ // 入力可能な場合
+            // 行、列、ブロックでその数字の箇所をインクリメント
 						++chist[c][num];
 						++rhist[r][num];
 						++bhist[ logic.idxToBlock(c, r) ][num];
@@ -410,14 +410,19 @@ window.onload = function(){
 			}
 		}
 
+    // 端に入力可能な数を描画する
 		for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 			ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
 			for( let k = 0; k < NUM_OF_CELLS; ++k ) {
-				const dx = ( fsize + 1 ) * ( k % BC | 0 );
-				const dy = ( fsize + 1 ) * ( k / BC | 0 );
-				if( chist[j][k] ) {
+				const dx = ( fsize + 1 ) * ( k % BC | 0 ); // 表示用の小ブロック内での横位置
+				const dy = ( fsize + 1 ) * ( k / BC | 0 ); // 表示用の小ブロック内での縦位置
+
+        // 下端に列の入力可能な数を描画する
+        if( chist[j][k] ) {
 					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize, ui.getCellTop( NUM_OF_CELLS ) + dy + fsize );
 				}
+
+        // 右端に行の入力可能な数を描画する
 				if( rhist[j][k] ) {
 					ctx.fillText( k + 1, ui.getCellLeft( NUM_OF_CELLS ) + dx + fsize, ui.getCellTop( j ) + dy + fsize );
 				}
