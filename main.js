@@ -8,7 +8,8 @@ var singleNumberKeyboard_generateKey = function(){
 	let str = "";
 	for(let i=0; i < NUM_OF_CELLS + 1; ++i){
 		const onclickcode = "singleNumberKeyboard_selectKey(" + i + ");";
-		str += "<div id='key" + i + "' class='number_select_key noselectable' onmousedown='" + onclickcode + "'>" + i + "</div>";
+		str += `<div id='key${i}' class='number_select_key noselectable'
+ onmousedown='${onclickcode}'>${i}</div>`;
 	}
 	str += "<div style='clear: both'></div>"; //float解除，はみ出し防止
 	document.getElementById("number_keyboard").innerHTML = str;
@@ -49,7 +50,7 @@ window.onload = function(){
 			};
 
 			function getCells(){
-				var tbl = new Array( NUM_OF_CELLS * NUM_OF_CELLS );
+				let tbl = new Array( NUM_OF_CELLS * NUM_OF_CELLS );
 				for( let i = 0; i < NUM_OF_CELLS; ++i ){
 					for( let j = 0; j < NUM_OF_CELLS; ++j ){
 						tbl[i * NUM_OF_CELLS + j] = getCell( j, i );
@@ -202,7 +203,10 @@ window.onload = function(){
 		}
 		var cellw = CELL_SIZ;
 		var cellh = CELL_SIZ;
-		$(".cell").css( { "width": cellw + "px", "height": cellh + "px", "font-size": CELL_SIZ * 0.7 |0 + "px" } );
+		$(".cell").css( {
+      "width": cellw + "px",
+      "height": cellh + "px",
+      "font-size": CELL_SIZ * 0.7 |0 + "px" } );
 	}
 
 
@@ -342,7 +346,8 @@ window.onload = function(){
 				if( number == -1 ) continue;
 				ctx.fillStyle = colors[ anstype ];
 				console.log( number );
-				ctx.fillText( number, ui.getCellLeft( j ) + CELL_SIZ/2, ui.getCellTop( i ) + CELL_SIZ/2 );
+				ctx.fillText( number, ui.getCellLeft( j ) + CELL_SIZ/2,
+        ui.getCellTop( i ) + CELL_SIZ/2 );
 			}
 		}
 
@@ -370,7 +375,8 @@ window.onload = function(){
 
 					const dx = ( fsize + 1 ) * ( k % BC | 0 );
 					const dy = ( fsize + 1 ) * ( k / BC | 0 );
-					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize, ui.getCellTop( i ) + dy + fsize );
+					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize,
+          ui.getCellTop( i ) + dy + fsize );
 					++cnt;
 					n = k;
 				}
@@ -419,12 +425,14 @@ window.onload = function(){
 
         // 下端に列の入力可能な数を描画する
         if( chist[j][k] ) {
-					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize, ui.getCellTop( NUM_OF_CELLS ) + dy + fsize );
+					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize,
+          ui.getCellTop( NUM_OF_CELLS ) + dy + fsize );
 				}
 
         // 右端に行の入力可能な数を描画する
 				if( rhist[j][k] ) {
-					ctx.fillText( k + 1, ui.getCellLeft( NUM_OF_CELLS ) + dx + fsize, ui.getCellTop( j ) + dy + fsize );
+					ctx.fillText( k + 1, ui.getCellLeft( NUM_OF_CELLS ) + dx + fsize,
+          ui.getCellTop( j ) + dy + fsize );
 				}
 			}
 		}
@@ -516,7 +524,8 @@ window.onload = function(){
 				return;
 			}
 
-			var centerX = ui.getCellLeft( nowc ) + CELL_SIZ/2, centerY = ui.getCellTop( nowr ) + CELL_SIZ/2;
+			var centerX = ui.getCellLeft( nowc ) + CELL_SIZ/2
+      var centerY = ui.getCellTop( nowr ) + CELL_SIZ/2;
 
 			if(!document.getElementById("single_number_keyboard").checked){
 				drawKeyboard( nowc, nowr, m_x - centerX, m_y - centerY );

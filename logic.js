@@ -78,7 +78,7 @@ class Logic {
       if ( !this.check(arr).valid ) continue;
       for (i = 0; i < TOTAL_CELLS; ++i) {
         if (arr[i] == 0) {
-          for (j = 1; j <= NUM_OF_CELLS; ++j) {
+          for (let j = 1; j <= NUM_OF_CELLS; ++j) {
             arr[i] = j;
             Q.push(arr.concat());
           }
@@ -108,12 +108,13 @@ class Logic {
     for (let r = 0; r < NUM_OF_CELLS; ++r) {
       for (let c = 0; c < NUM_OF_CELLS; ++c) {
         if (tbl[r * NUM_OF_CELLS + c]) {
-          var val = tbl[r * NUM_OF_CELLS + c] - 1;
-          var br = r / BR | 0,
+          const val = tbl[r * NUM_OF_CELLS + c] - 1;
+          const br = r / BR | 0,
             bc = c / BC | 0;
           for (let i = 0; i < NUM_OF_CELLS; ++i) {
             //該当ブロックのその数字を消す
             possibleList[NUM_OF_CELLS * (BC * br + (i / BC | 0)) + BC * bc + (i % BC)][val] = false;
+            // ★↑ここの添字おかしい？
             //該当行のその数字を消す
             possibleList[NUM_OF_CELLS * r + i][val] = false;
             //該当列のその数字を消す
@@ -223,7 +224,8 @@ class Logic {
               for (let l = 0; l < BR; ++l) {
                 var cy = i * BC + k,
                   cx = j * BR + l;
-                if (possibleList[cy * NUM_OF_CELLS + cx][num] && tbl[cy * NUM_OF_CELLS + cx] == 0) {
+                if (possibleList[cy * NUM_OF_CELLS + cx][num]
+                  　&& tbl[cy * NUM_OF_CELLS + cx] == 0) {
                   minx = Math.min(minx, cx);
                   maxx = Math.max(maxx, cx);
                   miny = Math.min(miny, cy);
