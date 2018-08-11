@@ -93,6 +93,7 @@ function getKeyboardColor(possible, num) : string {
  * @return boolean        有効か無効か
  */
 function circleKeyboardIsEnable() : boolean {
+  // 単数字入力と排他
   return !document.getElementById("single_number_keyboard").checked;
 }
 
@@ -132,4 +133,32 @@ function circleKeyboardStrokeOuterCircle( ctx, centerX, centerY, radius ) {
   Render.circle( ctx, centerX, centerY, radius );
   ctx.fill();
   ctx.stroke();
+}
+
+
+/**
+ * keycodeToDPos - キーコードを変位に変換
+ *
+ * @param  number keyCode キーコード
+ * @return DPos         変位
+ */
+
+function keycodeToDPos( keyCode: number ) :DPos {
+ const keys = {
+   "left": 37,
+   "up":		38,
+   "right":39,
+   "down":	40,
+ };
+
+ let dx = 0, dy = 0;
+ if( keyCode === keys.left  ) dx = -1;
+ if( keyCode === keys.right ) dx = 1;
+ if( keyCode === keys.up    ) dy = -1;
+ if( keyCode === keys.down  ) dy = 1;
+
+ return {
+   "dx": dx,
+   "dy": dy
+ };
 }

@@ -3,7 +3,7 @@
 var selectedPos = [0,0];
 
 
-var singleNumberKeyboard_currentNumber = 0; //単数字入力の現在の選択数字
+let singleNumberKeyboard_currentNumber = 0; //単数字入力の現在の選択数字
 var singleNumberKeyboard_generateKey = function(){
 	let str = "";
 	for(let i = 0; i < NUM_OF_CELLS + 1; ++i){
@@ -31,17 +31,21 @@ window.onload = function(){
 			function getCellLeft( x ){
 				return MARGIN + (CELL_SIZ-1) * x;
 			};
+
 			function getCellTop( y ){
 				return MARGIN + (CELL_SIZ-1) * y;
 			};
+
 			function _cellid( c, r ){
 				return "cell" + r + "_" + c;
 			};
+
 			function _inrange( c, r ){
 				const inrangec = 0 <= c && c < NUM_OF_CELLS;
 				const inranger = 0 <= r && r < NUM_OF_CELLS;
 				return inrangec && inranger;
 			};
+
 			function getCellElement( x, y ){
 				return $( "#" + _cellid( x, y ) );
 			};
@@ -516,8 +520,6 @@ window.onload = function(){
 			evt.preventDefault();
 			const isTouch = evt.type === "touchmove";
 			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
-			const m_x = mouseRPoint.mx;
-			const m_y = mouseRPoint.my;
 
 			if( nowc === null || nowr === null || !(ui._inrange(nowc, nowr)) ){
 				return;
@@ -527,6 +529,8 @@ window.onload = function(){
       var centerY = ui.getCellTop( nowr ) + CELL_SIZ/2;
 
 			if( circleKeyboardIsEnable() ){
+				const m_x = mouseRPoint.mx;
+				const m_y = mouseRPoint.my;
 				drawKeyboard( nowc, nowr, m_x - centerX, m_y - centerY );
 			}
 		},
@@ -608,12 +612,12 @@ window.onload = function(){
 			var inputData = dat.data;
 			for( let y = 0; y < dat.height; ++y ){
 				for( let x = 0; x < dat.width; ++x ){
-					var th = 140;
+					const th = 140;
 					var idx = (y * dat.width + x);
 					var valr = inputData[ idx * 4 + 0 ];
 					var valg = inputData[ idx * 4 + 1 ];
 					var valb = inputData[ idx * 4 + 2 ];
-					var gray = (valr + valg + valb)/3|0;
+					const gray = (valr + valg + valb)/3|0;
 					//var bin = (gray > th) ? 255 : 0;
 					inputData[ idx * 4 + 0 ] = gray;
 					inputData[ idx * 4 + 1 ] = gray;
