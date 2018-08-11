@@ -1,3 +1,3 @@
 # あとでwebpack化
-tsc ts_temp.ts
+tsc scripts/ts_temp.ts
 sleep 10s
