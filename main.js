@@ -6,7 +6,7 @@ var selectedPos = [0,0];
 var singleNumberKeyboard_currentNumber = 0; //単数字入力の現在の選択数字
 var singleNumberKeyboard_generateKey = function(){
 	let str = "";
-	for(let i=0; i < NUM_OF_CELLS + 1; ++i){
+	for(let i = 0; i < NUM_OF_CELLS + 1; ++i){
 		const onclickcode = "singleNumberKeyboard_selectKey(" + i + ");";
 		str += `<div id='key${i}' class='number_select_key noselectable'
  onmousedown='${onclickcode}'>${i}</div>`;
@@ -17,9 +17,11 @@ var singleNumberKeyboard_generateKey = function(){
 
 var singleNumberKeyboard_selectKey = function(num){
 	singleNumberKeyboard_currentNumber = num;
-	for(let i=0; i < NUM_OF_CELLS + 1; ++i){
+	for(let i = 0; i < NUM_OF_CELLS + 1; ++i){
+		// 非選択のキーは白で塗りつぶし
 		document.getElementById("key"+i).style.backgroundColor = "#ffffff";
 	}
+	// 選択中のキーだけ塗っておく
 	document.getElementById("key"+num).style.backgroundColor = "#cccccc";
 }
 
@@ -248,25 +250,20 @@ window.onload = function(){
 		ctx.save();
 		Render.clearScreen( ctx );
 		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
-		ctx.fillStyle = "rgba(255,255,255,0.9)";
-		Render.circle( ctx, centerX, centerY, OUTER_RADIUS );
-    ctx.fill();
-    ctx.stroke();
+
+		circleKeyboardStrokeOuterCircle( ctx, centerX, centerY, OUTER_RADIUS );
 
 		ctx.globalCompositeOperation = "xor"; //重なって描画される時に透明になる
-		ctx.fillStyle = "rgba(255,255,255,1.0)";
-		Render.circle( ctx, centerX, centerY, INNER_RADIUS );
-    ctx.fill();
-    ctx.stroke();
+		circleKeyboardStrokeInnerCircle( ctx, centerX, centerY, INNER_RADIUS );
 
 		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
 		ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
 
 		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
-		var mouseAngle = Math.atan2( rx, -ry );
+		let mouseAngle = Math.atan2( rx, -ry );
 		mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
 		var selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
-		var dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
+		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
 		var isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
 
 		for( let i = 0; i <= NUM_OF_CELLS; ++i ) {
@@ -277,7 +274,7 @@ window.onload = function(){
 			var keyRY = -KEY_RADIUS * Math.cos( keyAngle );
 			var keyX = centerX + keyRX
 			var keyY = centerY + keyRY;
-			
+
 			if( selectedNumber === i && isInRange ) {
 				ctx.translate( centerX, centerY );
 				const keyLineAngle1 = ( i - 0.5 ) * sAngle;
@@ -509,7 +506,7 @@ window.onload = function(){
 			nowc = c; nowr = r;
 			keyboardPossibleList = logic.suggest( ui.getCells() );
 			if( ui._inrange(nowc, nowr) ) {
-				if(!document.getElementById("single_number_keyboard").checked){
+				if( circleKeyboardIsEnable() ){
 					drawKeyboard( nowc, nowr );
 				}
 			}
@@ -529,7 +526,7 @@ window.onload = function(){
 			var centerX = ui.getCellLeft( nowc ) + CELL_SIZ/2
       var centerY = ui.getCellTop( nowr ) + CELL_SIZ/2;
 
-			if(!document.getElementById("single_number_keyboard").checked){
+			if( circleKeyboardIsEnable() ){
 				drawKeyboard( nowc, nowr, m_x - centerX, m_y - centerY );
 			}
 		},
@@ -539,14 +536,15 @@ window.onload = function(){
 
 			Render.clearScreen( ctx );
 
-			if(document.getElementById("single_number_keyboard").checked){
+			if( singleNumberKeyboardIsEnable() ){
 				ui.setCell( nowc, nowr, singleNumberKeyboard_currentNumber );
 			}
 
 			if(document.getElementById("keyboard_input").checked){
 			}
 
-			nowc = null; nowr = null;
+			nowc = null;
+			nowr = null;
 			Render.drawLine(ctx, WIDTH, 0, WIDTH, HEIGHT);
 			ui.refresh();
       drawSuggest();
@@ -625,7 +623,8 @@ window.onload = function(){
 			}
 
 			var tmp = $("#recognition_result").get(0);
-			tmp.width = 280;tmp.height = 280;
+			tmp.width = 280;
+			tmp.height = 280;
 			var tctx = tmp.getContext('2d');
 			tctx.putImageData(dat, 0, 0);
 

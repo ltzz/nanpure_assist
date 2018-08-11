@@ -18,7 +18,7 @@ interface MouseRelativePoint {
   * getPointFromMouseEvent - マウスイベントから座標取得
   *
   * @param  {type} mouseEvent マウスイベント
-  * @return {type}         座標
+  * @return MousePoint         座標
   */
 
  function getPointFromMouseEvent( evt, isTouchEvent ): MousePoint {
@@ -35,7 +35,7 @@ interface MouseRelativePoint {
   * getRelativePoint - マウス座標をボード左上からの相対座標に変換
   *
   * @param  {type} mousePoint マウスイベント
-  * @return {type}         相対座標
+  * @return MousePoint         相対座標
   */
  function getRelativePoint( mousePoint : MousePoint ) {
 
@@ -52,7 +52,7 @@ interface MouseRelativePoint {
   * getRelativePointFromMouseEvent - マウスイベントから相対座標取得
   *
   * @param  {type} mouseEvent マウスイベント
-  * @return {type}         相対座標
+  * @return MouseRelativePoint         相対座標
   */
 
  function getRelativePointFromMouseEvent( evt, isTouchEvent ): MouseRelativePoint {
@@ -67,7 +67,7 @@ interface MouseRelativePoint {
   *
   * @param  {type} possible 入力可能な数字かどうか(numが1以上のとき有効)
   * @param  {type} num 数字
-  * @return {type}        色
+  * @return string        色
   */
 function getKeyboardColor(possible, num) : string {
   let ret_val = "rgba(0, 0, 0, 0.7)";
@@ -84,4 +84,52 @@ function getKeyboardColor(possible, num) : string {
     ret_val = "rgba(192, 192, 192, 0.7)";
   }
   return ret_val;
+}
+
+
+/**
+ * circleKeyboardIsEnable - 円形キーボードが有効か
+ *
+ * @return boolean        有効か無効か
+ */
+function circleKeyboardIsEnable() : boolean {
+  return !document.getElementById("single_number_keyboard").checked;
+}
+
+
+
+/**
+ * singleNumberKeyboardIsEnable - 単数字入力キーボードが有効か
+ *
+ * @return boolean        有効か無効か
+ */
+function singleNumberKeyboardIsEnable() : boolean {
+  return document.getElementById("single_number_keyboard").checked;
+}
+
+
+
+
+/**
+ * circleKeyboardStrokeInnerCircle - 円形キーボードの内側の円描画
+ *
+ */
+function circleKeyboardStrokeInnerCircle( ctx, centerX, centerY, radius ) {
+  ctx.fillStyle = "rgba(255,255,255,1.0)";
+  Render.circle( ctx, centerX, centerY, radius );
+  ctx.fill();
+  ctx.stroke();
+}
+
+
+
+/**
+ * circleKeyboardStrokeOuterCircle - 円形キーボードの内側の円描画
+ *
+ */
+function circleKeyboardStrokeOuterCircle( ctx, centerX, centerY, radius ) {
+  ctx.fillStyle = "rgba(255,255,255,0.9)";
+  Render.circle( ctx, centerX, centerY, radius );
+  ctx.fill();
+  ctx.stroke();
 }
