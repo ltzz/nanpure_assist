@@ -1,6 +1,6 @@
 
 
-var selectedPos = [0,0];
+let selectedPos = [0,0];
 
 
 let singleNumberKeyboard_currentNumber = 0; //単数字入力の現在の選択数字
@@ -86,11 +86,10 @@ window.onload = function(){
 						const cdup = wrong.chist[j][n-1] > 1;
 						const rdup = wrong.rhist[i][n-1] > 1;
 						const bdup = wrong.bhist[ logic.idxToBlock( j, i ) ][n-1] > 1;
-						if( cdup || rdup || bdup ){// 重複がある場合
+						if( cdup || rdup || bdup ) {// 重複がある場合
 							el.css('color', '#ff0000');
 						}
-						else
-						{
+						else {
 							el.css('color', '#000000');
 						}
 					}
@@ -99,8 +98,8 @@ window.onload = function(){
 
 			function switchBoard(bnum){
 				selectedBoard = bnum;
-				for( let i　=　0; i　<　NUM_OF_CELLS; ++i ){
-					for( let j　=　0; j　<　NUM_OF_CELLS; ++j ){
+				for( let i　=　0; i　<　NUM_OF_CELLS; ++i ) {
+					for( let j　=　0; j　<　NUM_OF_CELLS; ++j ) {
 					const num = fields[selectedBoard].board[i][j];
 						$( "#" + _cellid( j, i ) ).html( num ? num : "<br>" );
 					}
@@ -108,8 +107,8 @@ window.onload = function(){
 			};
 
 			function clearBoard(){
-				for( let i　=　0; i < NUM_OF_CELLS; ++i ){
-					for( let j　=　0; j < NUM_OF_CELLS; ++j ){
+				for( let i　=　0; i < NUM_OF_CELLS; ++i ) {
+					for( let j　=　0; j < NUM_OF_CELLS; ++j ) {
 						setCell( j, i, 0 );
 					}
 				}
@@ -147,7 +146,7 @@ window.onload = function(){
 		}
 	());
 
-	var nowc = null, //クリック中の列
+	let nowc = null, //クリック中の列
 	nowr = null; //行
 
 	GF_Init();
@@ -179,41 +178,7 @@ window.onload = function(){
 	}
 
 	var ctx = $('#main_canvas').get(0).getContext('2d');
-	for( let i = 0; i < NUM_OF_CELLS; ++i ) {
-		for( let j = 0; j < NUM_OF_CELLS; ++j ) {
-			var cell = $("<div>");
-			var cellid = ui._cellid( j, i );
-			cell.attr({
-				id: cellid,
-				html: "<br>",
-			});
-			cell.addClass("cell");
-			if( j % BC === 0 ) { // ブロックの左端
-				cell.addClass("cell_left");
-			}
-			if( j % BC === BC - 1 ){ // ブロックの右端
-				cell.addClass("cell_right");
-			}
-			if( i % BR === 0 ) { // ブロックの上端
-				cell.addClass("cell_top");
-			}
-			if( i % BR === BR - 1 ){  // ブロックの下端
-				cell.addClass("cell_bottom");
-			}
-			if(selectedPos[0] === j && selectedPos[1] === i){
-				cell.addClass("selectedCell");
-			}
-			cell.css( "top", ui.getCellTop( i ) + "px" );
-			cell.css( "left", ui.getCellLeft( j ) + "px" );
-			$("#nu").append( cell );
-		}
-		var cellw = CELL_SIZ;
-		var cellh = CELL_SIZ;
-		$(".cell").css( {
-      "width": cellw + "px",
-      "height": cellh + "px",
-      "font-size": CELL_SIZ * 0.7 |0 + "px" } );
-	}
+	setupCells(); // セルの要素生成、挿入
 
 
 	$('#pctrl').bind({
@@ -248,8 +213,8 @@ window.onload = function(){
 		const OUTER_RADIUS = CELL_SIZ * 2.0 * ( NUM_OF_CELLS / 10 );
 		const INNER_RADIUS = CELL_SIZ * 0.7 * ( NUM_OF_CELLS / 10 );
 
-		var centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
-		var centerY = ui.getCellTop( r ) + CELL_SIZ / 2;
+		const centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
+		const centerY = ui.getCellTop( r )  + CELL_SIZ / 2;
 
 		ctx.save();
 		Render.clearScreen( ctx );
@@ -270,40 +235,28 @@ window.onload = function(){
 		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
 		var isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
 
-		for( let i = 0; i <= NUM_OF_CELLS; ++i ) {
-			var keyAngle = i * sAngle;
-			const numchr = (i === 0) ? 'C' : i;
-			var chrWidth = ctx.measureText( numchr ).width;
-			var keyRX =  KEY_RADIUS * Math.sin( keyAngle );
-			var keyRY = -KEY_RADIUS * Math.cos( keyAngle );
-			var keyX = centerX + keyRX
-			var keyY = centerY + keyRY;
+		for( let num = 0; num <= NUM_OF_CELLS; ++num ) { // 各番号について
+			var keyAngle = num * sAngle;
+			const numchr = (num === 0) ? 'C' : num;
+			const chrWidth = ctx.measureText( numchr ).width;
+			const keyRX =  KEY_RADIUS * Math.sin( keyAngle );
+			const keyRY = -KEY_RADIUS * Math.cos( keyAngle );
+			const keyX = centerX + keyRX
+			const keyY = centerY + keyRY;
 
-			if( selectedNumber === i && isInRange ) {
+			if( selectedNumber === num && isInRange ) {
 				ctx.translate( centerX, centerY );
-				const keyLineAngle1 = ( i - 0.5 ) * sAngle;
-				const keyLineAngle2 = ( i + 0.5 ) * sAngle;
+				const keyLineAngle1 = ( num - 0.5 ) * sAngle;
+				const keyLineAngle2 = ( num + 0.5 ) * sAngle;
+				circleKeyboardStrokeBorderLine( ctx, keyLineAngle1, INNER_RADIUS, OUTER_RADIUS );
+				circleKeyboardStrokeBorderLine( ctx, keyLineAngle2, INNER_RADIUS, OUTER_RADIUS );
 
-				const sindata1 = Math.sin( keyLineAngle1 );
-				const cosdata1 = Math.cos( keyLineAngle1 );
-
-				Render.drawLine( ctx,
-					+INNER_RADIUS * sindata1, -INNER_RADIUS * cosdata1,
-					+OUTER_RADIUS * sindata1, -OUTER_RADIUS * cosdata1
-					);
-
-				const sindata2 = Math.sin( keyLineAngle2 );
-				const cosdata2 = Math.cos( keyLineAngle2 );
-				Render.drawLine( ctx,
-					+INNER_RADIUS * sindata2, -INNER_RADIUS * cosdata2,
-					+OUTER_RADIUS * sindata2, -OUTER_RADIUS * cosdata2
-					);
 				ctx.translate( -centerX, -centerY );
 				//Render.circle(ctx,keyX,keyY,CELL_SIZ*0.4);ctx.stroke(); //fillに変更したい
-				ui.setCell( c, r, i );
+				ui.setCell( c, r, num ); // ★描画関数なのにここでセットしている 責務分離できていない
 			}
 
-			ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][i-1], i );
+			ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][num-1], num );
 
 			ctx.fillText( numchr, keyX - chrWidth/2, keyY + ctx.measureText( '1' ).width/2 );
 		}
@@ -312,7 +265,7 @@ window.onload = function(){
 
 	var showCountNumbers = function(){
 		var tbl = ui.getCells();
-		var numbers_count = new Array( NUM_OF_CELLS+1 ).fill(0);
+		var numbers_count = new Array( NUM_OF_CELLS + 1 ).fill(0);
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 				const val = tbl[ i * NUM_OF_CELLS + j ] - 1; // そのセルの数字
@@ -378,7 +331,7 @@ window.onload = function(){
 					const dx = ( fsize + 1 ) * ( k % BC | 0 );
 					const dy = ( fsize + 1 ) * ( k / BC | 0 );
 					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize,
-          ui.getCellTop( i ) + dy + fsize );
+          	ui.getCellTop( i ) + dy + fsize );
 					++cnt;
 					n = k;
 				}
@@ -479,16 +432,17 @@ window.onload = function(){
 				selectedPos[0] += dx;
 				selectedPos[1] += dy;
 			}
+
 			var cellid = ui._cellid(selectedPos[0], selectedPos[1]);
 			$(".selectedCell").removeClass("selectedCell");
 			$("#" + cellid).addClass("selectedCell");
 		}
-		if( keys["0"] <= keyCode && keyCode <= keys["0"] + 9 ){
-			ui.setCell( selectedPos[0], selectedPos[1], keyCode-keys["0"] );
+		if( keys["0"] <= keyCode && keyCode <= keys["0"] + 9 ){ // 数字キー
+			ui.setCell( selectedPos[0], selectedPos[1], keyCode-keys["0"] ); // 数字入れる
 			ui.refresh();
 		}
 		if( keyCode === keys.backspace ){
-			ui.setCell( selectedPos[0], selectedPos[1], 0 );
+			ui.setCell( selectedPos[0], selectedPos[1], 0 ); // そのセルの数字消す
 			ui.refresh();
 		}
 		//console.log(keyCode);
@@ -507,7 +461,8 @@ window.onload = function(){
 
 			var c = ((mouseRPoint.mx - MARGIN) / CELL_SIZ + 1|0) - 1
 			var r = ((mouseRPoint.my - MARGIN) / CELL_SIZ + 1|0) - 1;
-			nowc = c; nowr = r;
+			nowc = c;
+			nowr = r;
 			keyboardPossibleList = logic.suggest( ui.getCells() );
 			if( ui._inrange(nowc, nowr) ) {
 				if( circleKeyboardIsEnable() ){
@@ -534,6 +489,7 @@ window.onload = function(){
 				drawKeyboard( nowc, nowr, m_x - centerX, m_y - centerY );
 			}
 		},
+
 		'touchend mouseup': function( evt ){
 			const isTouch = evt.type === "touchend";
 			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );

@@ -1,3 +1,6 @@
 # あとでwebpack化
-tsc scripts/ts_temp.ts
+tsc scripts/ts_temp.ts > log.txt
+tsc scripts/input/circle_keyboard.ts >> log.txt
+tsc scripts/DOM_cells.ts >> log.txt
+cat log.txt
 sleep 10s

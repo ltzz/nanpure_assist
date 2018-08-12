@@ -11,7 +11,7 @@ function GF_Init() {
       ret += "<tr>";
       for (let j = 0; j < 3; ++j) {
         if (i == 0 && j == 0) ret += "<td>" + x + "</td>";
-        else ret += "<td class='grid" + i + "_" + j + "'><br></td>";
+        else ret += `<td class='grid${i}_${j}'><br></td>`;
       }
       ret += "</tr>";
     }
@@ -43,16 +43,16 @@ function GF_Init() {
       style: "position:absolute;top:100px;left:200px;width:" + GFBoardWidth + "px;height:" + GFBoardWidth + "px;" +
         "border:none;box-sizing:border-box;",
       mousedown: function(evt) {
-        const isTouch = evt.type === "touchstart";
+        const isTouchEvent = evt.type === "touchstart";
         var evt_parent_id = $(evt.target).parents("div")[0].id;
         var evt_parent = $("#" + evt_parent_id);
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
-        var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
-        var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
-        var m_x = pageX - $('#place_board').offset().left;
-        var m_y = pageY - $('#place_board').offset().top;
-        var b_x = pageX - evt_parent.offset().left;
-        var b_y = pageY - evt_parent.offset().top;
+        const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
+
+        var m_x = mousePoint.mx - $('#place_board').offset().left;
+        var m_y = mousePoint.my - $('#place_board').offset().top;
+        var b_x = mousePoint.mx - evt_parent.offset().left;
+        var b_y = mousePoint.my - evt_parent.offset().top;
 
         const idx = evt_parent.attr("id").substr(5) | 0;
         fields[idx].dragoffsetx = b_x;
@@ -71,12 +71,12 @@ function GF_Init() {
         var selectedidx = evt_parent.attr("id").substr(5) | 0;
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
         if (fields[selectedidx].dragging) {
-          var isTouch = evt.type === "touchmove";
+          const isTouchEvent = evt.type === "touchmove";
 
-          var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
-          var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
-          var m_x = pageX - $('#place_board').offset().left;
-          var m_y = pageY - $('#place_board').offset().top;
+          const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
+
+          var m_x = mousePoint.mx - $('#place_board').offset().left;
+          var m_y = mousePoint.my - $('#place_board').offset().top;
           var idx = evt_parent.attr("id").substr(5) | 0;
           var ox = m_x + $('#place_board').offset().left - fields[idx].dragoffsetx;
           var oy = m_y + $('#place_board').offset().top - fields[idx].dragoffsety;
@@ -87,14 +87,14 @@ function GF_Init() {
         }
       },
       mouseup: function(evt) {
-        const isTouch = evt.type === "touchend";
+        const isTouchEvent = evt.type === "touchend";
         var evt_parent_id = $(evt.target).parents("div")[0].id;
         var evt_parent = $("#" + evt_parent_id);
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
-        var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
-        var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
-        var m_x = pageX - $('#place_board').offset().left;
-        var m_y = pageY - $('#place_board').offset().top;
+        const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
+
+        var m_x = mousePoint.mx - $('#place_board').offset().left;
+        var m_y = mousePoint.my - $('#place_board').offset().top;
         var idx = evt_parent.attr("id").substr(5) | 0;
         var ox = m_x + $('#place_board').offset().left - fields[idx].dragoffsetx;
         var oy = m_y + $('#place_board').offset().top - fields[idx].dragoffsety;
@@ -103,27 +103,27 @@ function GF_Init() {
           left: ox
         });
 
-        var con = {
+        const con = {
           lefttop: 0,
           righttop: 1,
           leftbottom: 2,
           rightbottom: 3
         };
-        var conclass = {
+        const conclass = {
           lefttop: "grid0_0",
           righttop: "grid0_2",
           leftbottom: "grid2_0",
           rightbottom: "grid2_2"
         };
-        var conclass2 = ["grid0_0", "grid0_2", "grid2_0", "grid2_2"];
+        const conclass2 = ["grid0_0", "grid0_2", "grid2_0", "grid2_2"];
 
         for (let i = 0; i < fields.length; ++i) {
           var fieldx = $("#field" + i);
           if (i == idx) continue;
           var dx1 = fieldx.offset().left + 2 * GFBoardWidth / 3;
-          var dy1 = fieldx.offset().top + 2 * GFBoardWidth / 3;
+          var dy1 = fieldx.offset().top  + 2 * GFBoardWidth / 3;
           var dx2 = fieldx.offset().left - 2 * GFBoardWidth / 3;
-          var dy2 = fieldx.offset().top - 2 * GFBoardWidth / 3;
+          var dy2 = fieldx.offset().top  - 2 * GFBoardWidth / 3;
           //var con = {lefttop:4,righttop:2,leftbottom:3,rightbottom:1};
           if (Math.abs(dx1 - ox) < 15 && Math.abs(dy1 - oy) < 15) {
             evt_parent.offset({
@@ -178,8 +178,8 @@ function GF_Init() {
             var y1 = con_table[connect][1];
             var x2 = con_table[connect][2];
             var y2 = con_table[connect][3];
-            for (var a = 0; a < 3; ++a) {
-              for (var b = 0; b < 3; ++b) {
+            for (let a = 0; a < 3; ++a) {
+              for (let b = 0; b < 3; ++b) {
                 board2[y2 + a][x2 + b] = board1[y1 + a][x1 + b];
               }
             }
@@ -214,11 +214,10 @@ function GF_Init() {
   $('#place_board').mouseup(function(evt) {
     for (let i = 0; i < fields.length; ++i) {
       if (!fields[i].dragging) continue;
-      const isTouch = evt.type === "touchend";
-      var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
-      var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
-      var m_x = pageX - $('#place_board').offset().left;
-      var m_y = pageY - $('#place_board').offset().top;
+      const isTouchEvent = evt.type === "touchend";
+      const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
+      var m_x = mousePoint.mx - $('#place_board').offset().left;
+      var m_y = mousePoint.my - $('#place_board').offset().top;
       var ox = m_x + $('#place_board').offset().left - fields[i].dragoffsetx;
       var oy = m_y + $('#place_board').offset().top - fields[i].dragoffsety;
       $("#field" + i).offset({
@@ -232,11 +231,10 @@ function GF_Init() {
   $('#place_board').mousemove(function(evt) {
     for (let i = 0; i < fields.length; ++i) {
       if (!fields[i].dragging) continue;
-      const isTouch = evt.type === "touchend";
-      var pageX = (isTouch ? evt.originalEvent.changedTouches[0].pageX : evt.pageX);
-      var pageY = (isTouch ? evt.originalEvent.changedTouches[0].pageY : evt.pageY);
-      var m_x = pageX - $('#place_board').offset().left;
-      var m_y = pageY - $('#place_board').offset().top;
+      const isTouchEvent = evt.type === "touchend";
+      const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
+      var m_x = mousePoint.mx - $('#place_board').offset().left;
+      var m_y = mousePoint.my - $('#place_board').offset().top;
       var ox = m_x + $('#place_board').offset().left - fields[i].dragoffsetx;
       var oy = m_y + $('#place_board').offset().top - fields[i].dragoffsety;
       $("#field" + i).offset({
