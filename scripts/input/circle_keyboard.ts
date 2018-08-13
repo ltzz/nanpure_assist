@@ -1,3 +1,13 @@
+class CircleKeyboard {
+    static nowC = null;
+    static nowR = null;
+    static SetCurrentPosition(c, r) {
+      CircleKeyboard.nowC = c;
+      CircleKeyboard.nowR = r;
+    }
+}
+
+
 /**
  * getKeyboardColor - 円形キーボードの色を取得
  *
