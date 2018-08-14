@@ -1,20 +1,20 @@
-var Render = {
-  circle: function(ctx, x, y, r) {
+class Render {
+  static circle(ctx, x, y, r) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI, true);
     ctx.closePath();
-  },
-  drawLine: function(ctx, x1, y1, x2, y2) {
+  }
+  static drawLine(ctx, x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
     ctx.stroke();
     ctx.closePath();
-  },
-  clearScreen: function(ctx) {
+  }
+  static clearScreen(ctx) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
-  },
-  tally: function(ctx, n, x, y) { //正の字
+  }
+  static tally(ctx, n, x, y) { //正の字
     var tally_cnt = n / 5 | 0;
     var stroke_cnt = n % 5;
     ctx.save();
@@ -23,7 +23,7 @@ var Render = {
     x -= 0.5;
     y -= 0.5;
     ctx.beginPath();
-    for (var i = 0; i < tally_cnt; ++i) {
+    for (let i = 0; i < tally_cnt; ++i) {
       ctx.moveTo(x - 5, i * 12 + y - 5);
       ctx.lineTo(x + 5, i * 12 + y - 5);
 
@@ -39,7 +39,7 @@ var Render = {
       ctx.moveTo(x - 5, i * 12 + y + 5);
       ctx.lineTo(x + 5, i * 12 + y + 5);
     }
-    for (var i = 0; i < stroke_cnt; ++i) {
+    for (let i = 0; i < stroke_cnt; ++i) {
       if (stroke_cnt < 1) break;
       ctx.moveTo(x - 5, tally_cnt * 12 + y - 5);
       ctx.lineTo(x + 5, tally_cnt * 12 + y - 5);

@@ -1,8 +1,7 @@
-let selectedPos = [0,0];
-
 class CellInput {
+  static selectedPos = [0,0];
   static cellMove(dx, dy){
-    selectedPos[0] += dx;
-    selectedPos[1] += dy;
+    CellInput.selectedPos[0] += dx;
+    CellInput.selectedPos[1] += dy;
   }
 }

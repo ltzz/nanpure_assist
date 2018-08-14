@@ -4,5 +4,6 @@ tsc scripts/input/circle_keyboard.ts >> log.txt
 tsc scripts/input/single_input.ts >> log.txt
 tsc scripts/input/keyboard_input.ts >> log.txt
 tsc scripts/DOM_cells.ts >> log.txt
+tsc scripts/global.ts >> log.txt
 cat log.txt
 sleep 10s

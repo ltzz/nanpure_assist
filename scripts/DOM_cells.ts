@@ -21,7 +21,7 @@ function setupCells(){
       if( i % BR === BR - 1 ){  // ブロックの下端
         cell.addClass("cell_bottom");
       }
-      if(selectedPos[0] === j && selectedPos[1] === i){
+      if(CellInput.selectedPos[0] === j && CellInput.selectedPos[1] === i){
         cell.addClass("selectedCell");
       }
       cell.css( "top", ui.getCellTop( i ) + "px" );

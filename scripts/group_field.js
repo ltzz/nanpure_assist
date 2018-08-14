@@ -124,29 +124,30 @@ function GF_Init() {
           var dy1 = fieldx.offset().top  + 2 * GFBoardWidth / 3;
           var dx2 = fieldx.offset().left - 2 * GFBoardWidth / 3;
           var dy2 = fieldx.offset().top  - 2 * GFBoardWidth / 3;
+          const ConnectThresSizePx = 15;
           //var con = {lefttop:4,righttop:2,leftbottom:3,rightbottom:1};
-          if (Math.abs(dx1 - ox) < 15 && Math.abs(dy1 - oy) < 15) {
+          if (Math.abs(dx1 - ox) < ConnectThresSizePx && Math.abs(dy1 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy1,
               left: dx1
             });
             fields[i].connect[idx] = con.rightbottom;
             fields[idx].connect[i] = con.lefttop;
-          } else if (Math.abs(dx1 - ox) < 15 && Math.abs(dy2 - oy) < 15) {
+          } else if (Math.abs(dx1 - ox) < ConnectThresSizePx && Math.abs(dy2 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy2,
               left: dx1
             });
             fields[i].connect[idx] = con.righttop;
             fields[idx].connect[i] = con.leftbottom;
-          } else if (Math.abs(dx2 - ox) < 15 && Math.abs(dy1 - oy) < 15) {
+          } else if (Math.abs(dx2 - ox) < ConnectThresSizePx && Math.abs(dy1 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy1,
               left: dx2
             });
             fields[i].connect[idx] = con.leftbottom;
             fields[idx].connect[i] = con.righttop;
-          } else if (Math.abs(dx2 - ox) < 15 && Math.abs(dy2 - oy) < 15) {
+          } else if (Math.abs(dx2 - ox) < ConnectThresSizePx && Math.abs(dy2 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy2,
               left: dx2

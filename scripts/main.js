@@ -62,7 +62,7 @@ CircleKeyboard.nowR = null; //行
 	let keyboardPossibleList;
 	var drawKeyboard = function( c, r, rx, ry )
 	{
-
+		const main_ctx = ctx;
 		const KEY_RADIUS   = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );
 		// 9x9で最適だったサイズの流用
 
@@ -72,29 +72,28 @@ CircleKeyboard.nowR = null; //行
 		const centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
 		const centerY = ui.getCellTop( r )  + CELL_SIZ / 2;
 
-		ctx.save();
-		Render.clearScreen( ctx );
-		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
+		main_ctx.save();
+		Render.clearScreen( main_ctx );
+		main_ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
+		circleKeyboardStrokeOuterCircle( main_ctx, centerX, centerY, OUTER_RADIUS );
 
-		circleKeyboardStrokeOuterCircle( ctx, centerX, centerY, OUTER_RADIUS );
-
-		ctx.globalCompositeOperation = "xor"; //重なって描画される時に透明になる
-		circleKeyboardStrokeInnerCircle( ctx, centerX, centerY, INNER_RADIUS );
+		main_ctx.globalCompositeOperation = "xor"; //重なって描画される時に透明になる
+		circleKeyboardStrokeInnerCircle( main_ctx, centerX, centerY, INNER_RADIUS );
 
 		// 設定を既定値に戻す
-		ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
+		main_ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
 		// フォントの設定
-		ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
+		main_ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
 
 		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
 		let mouseAngle = Math.atan2( rx, -ry );
 		mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
-		var selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
+		const selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
 		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
-		var isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
+		const isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
 
 		for( let num = 0; num <= NUM_OF_CELLS; ++num ) { // 各番号について
-			var keyAngle = num * sAngle;
+			const keyAngle = num * sAngle;
 			const numchr = (num === 0) ? 'C' : num;
 			const chrWidth = ctx.measureText( numchr ).width;
 			const keyRX =  KEY_RADIUS * Math.sin( keyAngle );
@@ -103,22 +102,22 @@ CircleKeyboard.nowR = null; //行
 			const keyY = centerY + keyRY;
 
 			if( selectedNumber === num && isInRange ) {
-				ctx.translate( centerX, centerY );
+				main_ctx.translate( centerX, centerY );
 				const keyLineAngle1 = ( num - 0.5 ) * sAngle;
 				const keyLineAngle2 = ( num + 0.5 ) * sAngle;
-				circleKeyboardStrokeBorderLine( ctx, keyLineAngle1, INNER_RADIUS, OUTER_RADIUS );
-				circleKeyboardStrokeBorderLine( ctx, keyLineAngle2, INNER_RADIUS, OUTER_RADIUS );
+				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle1, INNER_RADIUS, OUTER_RADIUS );
+				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle2, INNER_RADIUS, OUTER_RADIUS );
 
-				ctx.translate( -centerX, -centerY );
+				main_ctx.translate( -centerX, -centerY );
 				//Render.circle(ctx,keyX,keyY,CELL_SIZ*0.4);ctx.stroke(); //fillに変更したい
 				ui.setCell( c, r, num ); // ★描画関数なのにここでセットしている 責務分離できていない
 			}
 
-			ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][num-1], num );
+			main_ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][num-1], num );
 
-			ctx.fillText( numchr, keyX - chrWidth/2, keyY + ctx.measureText( '1' ).width/2 );
+			main_ctx.fillText( numchr, keyX - chrWidth/2, keyY + ctx.measureText( '1' ).width/2 );
 		}
-		ctx.restore();
+		main_ctx.restore();
 	};
 
 	var showCountNumbers = function(){
@@ -155,7 +154,7 @@ CircleKeyboard.nowR = null; //行
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 				const anstype = predict[ NUM_OF_CELLS * i + j].ansType;
-				const number = predict[ NUM_OF_CELLS * i + j].number;
+				const number  = predict[ NUM_OF_CELLS * i + j].number;
 				if( number == -1 ) continue;
 				ctx.fillStyle = colors[ anstype ];
 				console.log( number );
@@ -286,20 +285,20 @@ CircleKeyboard.nowR = null; //行
 			const dx = DPos.dx;
 			const dy = DPos.dy;
 
-			if( ui._inrange( selectedPos[0] + dx, selectedPos[1] + dy ) ){ // セルの移動可能なら
+			if( ui._inrange( CellInput.selectedPos[0] + dx, CellInput.selectedPos[1] + dy ) ){ // セルの移動可能なら
 				CellInput.cellMove(dx, dy);
 			}
 
-			const cellid = ui._cellid(selectedPos[0], selectedPos[1]);
+			const cellid = ui._cellid(CellInput.selectedPos[0], CellInput.selectedPos[1]);
 			$(".selectedCell").removeClass("selectedCell");
 			$("#" + cellid).addClass("selectedCell");
 		}
 		if( keys["0"] <= keyCode && keyCode <= keys["0"] + 9 ){ // 数字キー
-			ui.setCell( selectedPos[0], selectedPos[1], keyCode-keys["0"] ); // 数字入れる
+			ui.setCell( CellInput.selectedPos[0], CellInput.selectedPos[1], keyCode-keys["0"] ); // 数字入れる
 			ui.refresh();
 		}
 		if( keyCode === keys.backspace ){
-			ui.setCell( selectedPos[0], selectedPos[1], 0 ); // そのセルの数字消す
+			ui.setCell( CellInput.selectedPos[0], CellInput.selectedPos[1], 0 ); // そのセルの数字消す
 			ui.refresh();
 		}
 		//console.log(keyCode);
@@ -354,7 +353,7 @@ CircleKeyboard.nowR = null; //行
 			Render.clearScreen( ctx );
 
 			if( singleNumberKeyboardIsEnable() ){
-				ui.setCell( CircleKeyboard.nowC, CircleKeyboard.nowR, singleNumberKeyboard_currentNumber );
+				ui.setCell( CircleKeyboard.nowC, CircleKeyboard.nowR, SingleNumberKeyboard.currentNumber );
 			}
 
 			if(document.getElementById("keyboard_input").checked){
