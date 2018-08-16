@@ -1,11 +1,10 @@
 var fields = [];
 var BoardCnt = 0;
 var selectedBoard = 0;
-var GFBoardWidth = 100;
+const GFBoardWidth = 100;
 
-function GF_Init() {
-
-  const table = (x) => {
+class FieldGroupManage {
+  static generateTable(x) {
     let ret = "<table class='gf_field'>";
     for (let i = 0; i < 3; ++i) {
       ret += "<tr>";
@@ -18,6 +17,9 @@ function GF_Init() {
     ret += "</table>";
     return ret;
   }
+}
+
+function GF_Init() {
 
   var addBoard = function() {
     if (BoardCnt > 5) return;
@@ -39,7 +41,7 @@ function GF_Init() {
     $("<div>", {
       class: "test",
       id: "field" + BoardCnt,
-      html: table(BoardCnt),
+      html: FieldGroupManage.generateTable(BoardCnt),
       style: "position:absolute;top:100px;left:200px;width:" + GFBoardWidth + "px;height:" + GFBoardWidth + "px;" +
         "border:none;box-sizing:border-box;",
       mousedown: function(evt) {
@@ -164,7 +166,7 @@ function GF_Init() {
           $("#field" + i + " ." + conclass.lefttop).css("background-color", "none");
 
           $("#field" + i).css("border", "none");
-          for (var j in fields[i].connect) {
+          for (let j in fields[i].connect) {
             var connect = fields[i].connect[j];
             $("#field" + i + " ." + conclass2[connect]).css("background-color", "#ffffcc");
             var board1 = fields[i].board;
@@ -188,7 +190,7 @@ function GF_Init() {
           }
         }
         fields[idx].dragging = false;
-        (new UI()).switchBoard(idx);
+        ui.switchBoard(idx);
         $("#field" + idx).css("border", "thin solid #ff6666");
       }
     }).appendTo("#place_board");
@@ -217,10 +219,9 @@ function GF_Init() {
       if (!fields[i].dragging) continue;
       const isTouchEvent = evt.type === "touchend";
       const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
-      var m_x = mousePoint.mx - $('#place_board').offset().left;
-      var m_y = mousePoint.my - $('#place_board').offset().top;
-      var ox = m_x + $('#place_board').offset().left - fields[i].dragoffsetx;
-      var oy = m_y + $('#place_board').offset().top - fields[i].dragoffsety;
+      const mouseRPoint = getRelativePointFG( mousePoint );
+      var ox = mouseRPoint.mx + $('#place_board').offset().left - fields[i].dragoffsetx;
+      var oy = mouseRPoint.my + $('#place_board').offset().top - fields[i].dragoffsety;
       $("#field" + i).offset({
         top: oy,
         left: ox
@@ -234,10 +235,9 @@ function GF_Init() {
       if (!fields[i].dragging) continue;
       const isTouchEvent = evt.type === "touchend";
       const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
-      var m_x = mousePoint.mx - $('#place_board').offset().left;
-      var m_y = mousePoint.my - $('#place_board').offset().top;
-      var ox = m_x + $('#place_board').offset().left - fields[i].dragoffsetx;
-      var oy = m_y + $('#place_board').offset().top - fields[i].dragoffsety;
+      const mouseRPoint = getRelativePointFG( mousePoint );
+      var ox = mouseRPoint.mx + $('#place_board').offset().left - fields[i].dragoffsetx;
+      var oy = mouseRPoint.my + $('#place_board').offset().top - fields[i].dragoffsety;
       $("#field" + i).offset({
         top: oy,
         left: ox

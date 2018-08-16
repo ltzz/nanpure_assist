@@ -62,6 +62,25 @@ interface MouseRelativePoint {
  }
 
 
+ /**
+  * getRelativePointFG - マウス座標を合体ナンプレ用結合設定左上からの相対座標に変換
+  *
+  * @param  {type} mousePoint マウスイベント
+  * @return MousePoint         相対座標
+  */
+ function getRelativePointFG( mousePoint : MousePoint ) {
+
+  var m_x = mousePoint.mx  - $('#place_board').offset().left;
+  var m_y = mousePoint.my  - $('#place_board').offset().top;
+return {
+  "mx": m_x,
+  "my": m_y
+};
+}
+
+
+
+
 /**
  * singleNumberKeyboardIsEnable - 単数字入力キーボードが有効か
  *
