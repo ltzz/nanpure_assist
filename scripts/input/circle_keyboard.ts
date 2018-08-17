@@ -1,11 +1,4 @@
 class CircleKeyboard {
-  static nowC = null;
-  static nowR = null;
-
-  static SetCurrentPosition(c : any, r : any) {
-    CircleKeyboard.nowC = c;
-    CircleKeyboard.nowR = r;
-  }
 
   static drawKeyboard( main_ctx, keyboardPossibleList, c, r, rx, ry ) {
 
@@ -25,23 +18,20 @@ class CircleKeyboard {
 		// フォントの設定
 		main_ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
 
-		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
-		let mouseAngle = Math.atan2( rx, -ry );
-		mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
-		const selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
-		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
-		const isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
+    const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
+
+    const cObj = CircleKeyboard.getSelectedNumberFromCoodinates(rx, ry);
 
 		for( let num = 0; num <= NUM_OF_CELLS; ++num ) { // 各番号について
 			const keyAngle = num * sAngle;
-			const numchr = (num === 0) ? 'C' : num; // 0は"C"
+			const numchr : string = (num === 0) ? 'C' : String(num); // 0は"C"
 			const chrWidth = main_ctx.measureText( numchr ).width;
 			const keyRX =  KEY_RADIUS * Math.sin( keyAngle );
 			const keyRY = -KEY_RADIUS * Math.cos( keyAngle );
 			const keyX = centerX + keyRX
 			const keyY = centerY + keyRY;
 
-			if( selectedNumber === num && isInRange ) {
+			if( cObj.selectedNumber === num && cObj.isInRange ) {
 				main_ctx.translate( centerX, centerY );
 				const keyLineAngle1 = ( num - 0.5 ) * sAngle;
 				const keyLineAngle2 = ( num + 0.5 ) * sAngle;
@@ -59,6 +49,32 @@ class CircleKeyboard {
 
 		main_ctx.restore();
   }
+
+  static getSelectedNumberFromCoodinates (rx : number, ry : number){
+    const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
+    let mouseAngle = Math.atan2( rx, -ry );
+    mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
+    const selectedNumber : number = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
+    const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
+    const isInRange : boolean = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
+    return {
+      selectedNumber: selectedNumber,
+      isInRange     : isInRange
+    }
+  }
+
+  static mouseJob ( ctx :any, keyboardPossibleList : any, c : number, r : number, rx : number, ry : number )
+  	{
+  		const main_ctx = ctx;
+  		const cObj = CircleKeyboard.getSelectedNumberFromCoodinates(rx, ry);
+
+  		CircleKeyboard.drawKeyboard( main_ctx, keyboardPossibleList, c, r, rx, ry );
+
+  		if( cObj.isInRange ) {
+  			ui.setCell( c, r, cObj.selectedNumber );
+  		}
+
+  	};
 }
 
 
@@ -128,7 +144,7 @@ function circleKeyboardStrokeOuterCircle(ctx, centerX, centerY, radius) {
  * circleKeyboardStrokeBorderLine - 円形キーボードの間の境界線描画
  *
  */
-function circleKeyboardStrokeBorderLine(ctx, keyLineAngle: number, INNER_RADIUS: number, OUTER_RADIUS: number) {
+function circleKeyboardStrokeBorderLine(ctx : any, keyLineAngle: number, INNER_RADIUS: number, OUTER_RADIUS: number) {
 
   const sindata = Math.sin(keyLineAngle);
   const cosdata = Math.cos(keyLineAngle);

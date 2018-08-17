@@ -2,8 +2,8 @@
 
 window.onload = function(){
 
-CircleKeyboard.nowC = null; //クリック中の列
-CircleKeyboard.nowR = null; //行
+MouseCellSelect.nowC = null; //クリック中の列
+MouseCellSelect.nowR = null; //行
 
 	GF_Init();
 
@@ -60,24 +60,6 @@ CircleKeyboard.nowR = null; //行
 
 	Tabs();
 	let keyboardPossibleList;
-	var circleKeyboardJob = function( c, r, rx, ry )
-	{
-		const main_ctx = ctx;
-
-		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
-		let mouseAngle = Math.atan2( rx, -ry );
-		mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
-		const selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
-		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
-		const isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
-
-		CircleKeyboard.drawKeyboard( main_ctx, keyboardPossibleList, c, r, rx, ry );
-
-		if( isInRange ) {
-			ui.setCell( c, r, selectedNumber );
-		}
-
-	};
 
 	var showCountNumbers = function(){
 		var tbl = ui.getCells();
@@ -132,7 +114,7 @@ CircleKeyboard.nowR = null; //行
     var cvs = document.getElementById("possible");
     cvs.width = WIDTH;
 		cvs.height = HEIGHT;
-    var pctx = cvs.getContext('2d');
+    const pctx = cvs.getContext('2d');
 		const fsize = ( CELL_SIZ * 0.7 / BC |0 );
 		pctx.font = fsize + "px Meiryo UI";
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
@@ -276,12 +258,12 @@ CircleKeyboard.nowR = null; //行
 
 			var c = ((mouseRPoint.mx - MARGIN) / CELL_SIZ + 1|0) - 1
 			var r = ((mouseRPoint.my - MARGIN) / CELL_SIZ + 1|0) - 1;
-			CircleKeyboard.SetCurrentPosition(c, r);
+			MouseCellSelect.SetCurrentPosition(c, r);
 
 			keyboardPossibleList = logic.suggest( ui.getCells() );
-			if( ui._inrange(CircleKeyboard.nowC, CircleKeyboard.nowR) ) {
+			if( ui._inrange(MouseCellSelect.nowC, MouseCellSelect.nowR) ) {
 				if( circleKeyboardIsEnable() ){
-					circleKeyboardJob( CircleKeyboard.nowC, CircleKeyboard.nowR );
+					CircleKeyboard.mouseJob( ctx, keyboardPossibleList, MouseCellSelect.nowC, MouseCellSelect.nowR, 0, 0 );
 				}
 			}
 		},
@@ -291,18 +273,18 @@ CircleKeyboard.nowR = null; //行
 			const isTouch = evt.type === "touchmove";
 			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
 
-			if( CircleKeyboard.nowC === null || CircleKeyboard.nowR === null
-				|| !(ui._inrange(CircleKeyboard.nowC, CircleKeyboard.nowR)) ){
+			if( MouseCellSelect.nowC === null || MouseCellSelect.nowR === null
+				|| !(ui._inrange(MouseCellSelect.nowC, MouseCellSelect.nowR)) ){
 				return;
 			}
 
-			var centerX = ui.getCellLeft( CircleKeyboard.nowC ) + CELL_SIZ/2
-      var centerY = ui.getCellTop( CircleKeyboard.nowR ) + CELL_SIZ/2;
+			const centerX = ui.getCellLeft( MouseCellSelect.nowC ) + CELL_SIZ/2
+      const centerY = ui.getCellTop( MouseCellSelect.nowR )  + CELL_SIZ/2;
 
 			if( circleKeyboardIsEnable() ){
 				const m_x = mouseRPoint.mx;
 				const m_y = mouseRPoint.my;
-				circleKeyboardJob( CircleKeyboard.nowC, CircleKeyboard.nowR, m_x - centerX, m_y - centerY );
+				CircleKeyboard.mouseJob( ctx, keyboardPossibleList, MouseCellSelect.nowC, MouseCellSelect.nowR, m_x - centerX, m_y - centerY );
 			}
 		},
 
@@ -313,14 +295,14 @@ CircleKeyboard.nowR = null; //行
 			Render.clearScreen( ctx );
 
 			if( singleNumberKeyboardIsEnable() ){
-				ui.setCell( CircleKeyboard.nowC, CircleKeyboard.nowR, SingleNumberKeyboard.currentNumber );
+				ui.setCell( MouseCellSelect.nowC, MouseCellSelect.nowR, SingleNumberKeyboard.currentNumber );
 			}
 
 			if(document.getElementById("keyboard_input").checked){
 			}
 
-			CircleKeyboard.nowC = null;
-			CircleKeyboard.nowR = null;
+			MouseCellSelect.nowC = null;
+			MouseCellSelect.nowR = null;
 			Render.drawLine(ctx, WIDTH, 0, WIDTH, HEIGHT);
 			ui.refresh();
       drawSuggest();
