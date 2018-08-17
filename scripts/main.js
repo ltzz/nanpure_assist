@@ -60,30 +60,9 @@ CircleKeyboard.nowR = null; //行
 
 	Tabs();
 	let keyboardPossibleList;
-	var drawKeyboard = function( c, r, rx, ry )
+	var circleKeyboardJob = function( c, r, rx, ry )
 	{
 		const main_ctx = ctx;
-		const KEY_RADIUS   = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );
-		// 9x9で最適だったサイズの流用
-
-		const OUTER_RADIUS = CELL_SIZ * 2.0 * ( NUM_OF_CELLS / 10 );
-		const INNER_RADIUS = CELL_SIZ * 0.7 * ( NUM_OF_CELLS / 10 );
-
-		const centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
-		const centerY = ui.getCellTop( r )  + CELL_SIZ / 2;
-
-		main_ctx.save();
-		Render.clearScreen( main_ctx );
-		main_ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
-		circleKeyboardStrokeOuterCircle( main_ctx, centerX, centerY, OUTER_RADIUS );
-
-		main_ctx.globalCompositeOperation = "xor"; //重なって描画される時に透明になる
-		circleKeyboardStrokeInnerCircle( main_ctx, centerX, centerY, INNER_RADIUS );
-
-		// 設定を既定値に戻す
-		main_ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
-		// フォントの設定
-		main_ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
 
 		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
 		let mouseAngle = Math.atan2( rx, -ry );
@@ -92,37 +71,17 @@ CircleKeyboard.nowR = null; //行
 		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
 		const isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
 
-		for( let num = 0; num <= NUM_OF_CELLS; ++num ) { // 各番号について
-			const keyAngle = num * sAngle;
-			const numchr = (num === 0) ? 'C' : num;
-			const chrWidth = ctx.measureText( numchr ).width;
-			const keyRX =  KEY_RADIUS * Math.sin( keyAngle );
-			const keyRY = -KEY_RADIUS * Math.cos( keyAngle );
-			const keyX = centerX + keyRX
-			const keyY = centerY + keyRY;
+		CircleKeyboard.drawKeyboard( main_ctx, keyboardPossibleList, c, r, rx, ry );
 
-			if( selectedNumber === num && isInRange ) {
-				main_ctx.translate( centerX, centerY );
-				const keyLineAngle1 = ( num - 0.5 ) * sAngle;
-				const keyLineAngle2 = ( num + 0.5 ) * sAngle;
-				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle1, INNER_RADIUS, OUTER_RADIUS );
-				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle2, INNER_RADIUS, OUTER_RADIUS );
-
-				main_ctx.translate( -centerX, -centerY );
-				//Render.circle(ctx,keyX,keyY,CELL_SIZ*0.4);ctx.stroke(); //fillに変更したい
-				ui.setCell( c, r, num ); // ★描画関数なのにここでセットしている 責務分離できていない
-			}
-
-			main_ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][num-1], num );
-
-			main_ctx.fillText( numchr, keyX - chrWidth/2, keyY + ctx.measureText( '1' ).width/2 );
+		if( isInRange ) {
+			ui.setCell( c, r, selectedNumber );
 		}
-		main_ctx.restore();
+
 	};
 
 	var showCountNumbers = function(){
 		var tbl = ui.getCells();
-		var numbers_count = new Array( NUM_OF_CELLS + 1 ).fill(0);
+		let numbers_count = new Array( NUM_OF_CELLS + 1 ).fill(0);
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 				const val = tbl[ i * NUM_OF_CELLS + j ] - 1; // そのセルの数字
@@ -322,7 +281,7 @@ CircleKeyboard.nowR = null; //行
 			keyboardPossibleList = logic.suggest( ui.getCells() );
 			if( ui._inrange(CircleKeyboard.nowC, CircleKeyboard.nowR) ) {
 				if( circleKeyboardIsEnable() ){
-					drawKeyboard( CircleKeyboard.nowC, CircleKeyboard.nowR );
+					circleKeyboardJob( CircleKeyboard.nowC, CircleKeyboard.nowR );
 				}
 			}
 		},
@@ -332,7 +291,8 @@ CircleKeyboard.nowR = null; //行
 			const isTouch = evt.type === "touchmove";
 			const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
 
-			if( CircleKeyboard.nowC === null || CircleKeyboard.nowR === null || !(ui._inrange(CircleKeyboard.nowC, CircleKeyboard.nowR)) ){
+			if( CircleKeyboard.nowC === null || CircleKeyboard.nowR === null
+				|| !(ui._inrange(CircleKeyboard.nowC, CircleKeyboard.nowR)) ){
 				return;
 			}
 
@@ -342,7 +302,7 @@ CircleKeyboard.nowR = null; //行
 			if( circleKeyboardIsEnable() ){
 				const m_x = mouseRPoint.mx;
 				const m_y = mouseRPoint.my;
-				drawKeyboard( CircleKeyboard.nowC, CircleKeyboard.nowR, m_x - centerX, m_y - centerY );
+				circleKeyboardJob( CircleKeyboard.nowC, CircleKeyboard.nowR, m_x - centerX, m_y - centerY );
 			}
 		},
 

@@ -1,9 +1,63 @@
 class CircleKeyboard {
   static nowC = null;
   static nowR = null;
+
   static SetCurrentPosition(c : any, r : any) {
     CircleKeyboard.nowC = c;
     CircleKeyboard.nowR = r;
+  }
+
+  static drawKeyboard( main_ctx, keyboardPossibleList, c, r, rx, ry ) {
+
+		const centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
+		const centerY = ui.getCellTop( r )  + CELL_SIZ / 2;
+
+		main_ctx.save();
+		Render.clearScreen( main_ctx );
+		main_ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
+		circleKeyboardStrokeOuterCircle( main_ctx, centerX, centerY, OUTER_RADIUS );
+
+		main_ctx.globalCompositeOperation = "xor"; //重なって描画される時に透明になる
+		circleKeyboardStrokeInnerCircle( main_ctx, centerX, centerY, INNER_RADIUS );
+
+		// 設定を既定値に戻す
+		main_ctx.globalCompositeOperation = "source-over"; //重ねて描画(既定値)
+		// フォントの設定
+		main_ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
+
+		const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
+		let mouseAngle = Math.atan2( rx, -ry );
+		mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
+		const selectedNumber = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
+		const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
+		const isInRange = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
+
+		for( let num = 0; num <= NUM_OF_CELLS; ++num ) { // 各番号について
+			const keyAngle = num * sAngle;
+			const numchr = (num === 0) ? 'C' : num; // 0は"C"
+			const chrWidth = main_ctx.measureText( numchr ).width;
+			const keyRX =  KEY_RADIUS * Math.sin( keyAngle );
+			const keyRY = -KEY_RADIUS * Math.cos( keyAngle );
+			const keyX = centerX + keyRX
+			const keyY = centerY + keyRY;
+
+			if( selectedNumber === num && isInRange ) {
+				main_ctx.translate( centerX, centerY );
+				const keyLineAngle1 = ( num - 0.5 ) * sAngle;
+				const keyLineAngle2 = ( num + 0.5 ) * sAngle;
+				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle1, INNER_RADIUS, OUTER_RADIUS );
+				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle2, INNER_RADIUS, OUTER_RADIUS );
+
+				main_ctx.translate( -centerX, -centerY );
+				//Render.circle(ctx,keyX,keyY,CELL_SIZ*0.4);ctx.stroke(); //fillに変更したい
+			}
+
+			main_ctx.fillStyle = getKeyboardColor( keyboardPossibleList[NUM_OF_CELLS * r + c][num-1], num );
+
+			main_ctx.fillText( numchr, keyX - chrWidth/2, keyY + main_ctx.measureText( '1' ).width/2 );
+		}
+
+		main_ctx.restore();
   }
 }
 
