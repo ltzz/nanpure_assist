@@ -24,11 +24,11 @@ MouseCellSelect.nowR = null; //行
     drawSuggest();
 	}
 
-	var testKeydown = function(){
+	var usedNumberKeyDown = function(){
     ctx.drawImage(drawUsedNumber(),0,0);//上書きするよりレイヤーの表示非表示のほうがよさそう
 	}
 
-	var testKeyUp = function(){
+	var usedNumberKeyUp = function(){
     Render.clearScreen( ctx );
     drawSuggest();
 	}
@@ -48,10 +48,10 @@ MouseCellSelect.nowR = null; //行
 
 	$('#usednum').bind({
 		"mousedown touchstart": function(){
-			testKeydown();
+			usedNumberKeyDown();
 		},
 		"mouseup touchend": function(){
-			testKeyUp();
+			usedNumberKeyUp();
 		}
 	});
 
@@ -71,7 +71,7 @@ MouseCellSelect.nowR = null; //行
 			}
 		}
 		ctx.font = "10px Segoe UI";
-		ctx.fillStyle = "rgba(0, 0, 0, 0.7)";
+		ctx.fillStyle = COLORS.black;
 		for( let i = 1; i <= NUM_OF_CELLS; ++i ) { //個数表示
 			const str = i + " : " + numbers_count[i] + " / " + NUM_OF_CELLS;
 			ctx.fillText( str, 10, HEIGHT - 10 * ( NUM_OF_CELLS - i + 2) );
@@ -81,11 +81,11 @@ MouseCellSelect.nowR = null; //行
 	}
 
 	var drawSuggest = function(){
-		var tbl = ui.getCells();
+		const tbl = ui.getCells();
 		var fsize = CELL_SIZ * 0.7 |0;
 		ctx.font = fsize + "px Meiryo UI";
 
-		var predict = logic.predict(tbl);
+		const predict = logic.predict(tbl);
 		const colors = [
 			"rgba(0, 127, 255, 0.7)",
 			"rgba(0, 255, 127, 0.7)",
@@ -110,26 +110,21 @@ MouseCellSelect.nowR = null; //行
 
 
 	var drawPossible = function(){
-		var possibleList = logic.suggest(ui.getCells());
+		const possibleList = logic.suggest(ui.getCells());
     var cvs = document.getElementById("possible");
     cvs.width = WIDTH;
 		cvs.height = HEIGHT;
     const pctx = cvs.getContext('2d');
-		const fsize = ( CELL_SIZ * 0.7 / BC |0 );
-		pctx.font = fsize + "px Meiryo UI";
+		pctx.font = FONTSIZE_MININUMBER + "px Meiryo UI";
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
 			for( let j = 0; j < NUM_OF_CELLS; ++j ) {
 				let cnt = 0, n;
-				pctx.fillStyle = "rgba(255, 0, 0, 0.7)";
+				pctx.fillStyle = COLORS.red;
 				for( let k = 0; k < NUM_OF_CELLS; ++k ) {
 					if( !possibleList[NUM_OF_CELLS * i + j][k] ){
 						continue;
 					}
-
-					const dx = ( fsize + 1 ) * ( k % BC | 0 );
-					const dy = ( fsize + 1 ) * ( k / BC | 0 );
-					pctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize,
-          	ui.getCellTop( i ) + dy + fsize );
+					Render.drawMiniNumber( pctx, i, j, k / BC | 0, k % BC |0, FONTSIZE_MININUMBER, k + 1 );
 					++cnt;
 					n = k;
 				}
@@ -139,13 +134,12 @@ MouseCellSelect.nowR = null; //行
 
 
 	var drawUsedNumber = function(){
-		var tbl = ui.getCells();
+
     var cvs = document.createElement('canvas');
     cvs.width = WIDTH;
 		cvs.height = HEIGHT;
     var ctx = cvs.getContext('2d');
-		const fsize = ( CELL_SIZ * 0.7 / BC |0 );
-		ctx.font = fsize + "px Meiryo UI";
+		ctx.font = FONTSIZE_MININUMBER + "px Meiryo UI";
 
 		let chist = [], rhist = [], bhist = [];
 		for( let i = 0; i < NUM_OF_CELLS; ++i ) {
@@ -154,39 +148,36 @@ MouseCellSelect.nowR = null; //行
 			bhist[i] = new Array(NUM_OF_CELLS).fill(0);
 		}
 
-
+		const tbl = ui.getCells();
 		const possibleList = logic.suggest(tbl);
-		for( let r = 0; r < NUM_OF_CELLS; ++r ) {//行，列，ブロックごとにヒストグラムを作る
-			for( let c = 0; c < NUM_OF_CELLS; ++c ) {
-				for( let num = 0; num < NUM_OF_CELLS; ++num ){
-					if( !possibleList[ NUM_OF_CELLS * r + c ][num] ) continue;
-					if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){ // 入力可能な場合
-            // 行、列、ブロックでその数字の箇所をインクリメント
-						++chist[c][num];
-						++rhist[r][num];
-						++bhist[ logic.idxToBlock(c, r) ][num];
-					}
+		Field.each( (c,r) => { //行，列，ブロックごとにヒストグラムを作る
+			for( let num = 0; num < NUM_OF_CELLS; ++num ){
+				if( !possibleList[ NUM_OF_CELLS * r + c ][num] ) continue;
+				if( tbl[ r * NUM_OF_CELLS + c ] == 0 ){ // 入力可能な場合
+					// 行、列、ブロックでその数字の箇所をインクリメント
+					++chist[c][num];
+					++rhist[r][num];
+					++bhist[ logic.idxToBlock(c, r) ][num];
 				}
 			}
-		}
+		} );
 
+		ctx.fillStyle = COLORS.red;
     // 端に入力可能な数を描画する
 		for( let j = 0; j < NUM_OF_CELLS; ++j ) {
-			ctx.fillStyle = "rgba(255, 0, 0, 0.7)";
 			for( let k = 0; k < NUM_OF_CELLS; ++k ) {
-				const dx = ( fsize + 1 ) * ( k % BC | 0 ); // 表示用の小ブロック内での横位置
-				const dy = ( fsize + 1 ) * ( k / BC | 0 ); // 表示用の小ブロック内での縦位置
+				const str = k + 1;
+				const innerR = k / BC | 0;
+				const innerC = k % BC | 0;
 
         // 下端に列の入力可能な数を描画する
         if( chist[j][k] ) {
-					ctx.fillText( k + 1, ui.getCellLeft( j ) + dx + fsize,
-          ui.getCellTop( NUM_OF_CELLS ) + dy + fsize );
+					Render.drawMiniNumber( ctx, NUM_OF_CELLS, j, innerR, innerC, FONTSIZE_MININUMBER, str );
 				}
 
         // 右端に行の入力可能な数を描画する
 				if( rhist[j][k] ) {
-					ctx.fillText( k + 1, ui.getCellLeft( NUM_OF_CELLS ) + dx + fsize,
-          ui.getCellTop( j ) + dy + fsize );
+					Render.drawMiniNumber( ctx, j, NUM_OF_CELLS, innerR, innerC, FONTSIZE_MININUMBER, str );
 				}
 			}
 		}
@@ -214,13 +205,14 @@ MouseCellSelect.nowR = null; //行
 		"backspace": 8,
 	};
 
-	$(window).keydown(function( e ){
-		const keyCode = e.keyCode;
+	$(window).keydown(function( evt ){
+		const keyCode = evt.keyCode;
 		if( keyCode === keys.ctrl ){
 			suggestKeydown();
     }
+
 		if( keys.left <= keyCode && keyCode <= keys.down ){
-			e.preventDefault();//prevent scroll
+			evt.preventDefault();//prevent scroll
 
 			const DPos = keycodeToDPos( keyCode );
 			const dx = DPos.dx;
@@ -234,19 +226,22 @@ MouseCellSelect.nowR = null; //行
 			$(".selectedCell").removeClass("selectedCell");
 			$("#" + cellid).addClass("selectedCell");
 		}
+
 		if( keys["0"] <= keyCode && keyCode <= keys["0"] + 9 ){ // 数字キー
 			ui.setCell( CellInput.selectedPos[0], CellInput.selectedPos[1], keyCode-keys["0"] ); // 数字入れる
 			ui.refresh();
 		}
+
 		if( keyCode === keys.backspace ){
 			ui.setCell( CellInput.selectedPos[0], CellInput.selectedPos[1], 0 ); // そのセルの数字消す
 			ui.refresh();
 		}
+
 		//console.log(keyCode);
 	});
 
-  $(window).keyup(function(e){
-      if( e.keyCode === keys.ctrl ){
+  $(window).keyup(function(evt){
+      if( evt.keyCode === keys.ctrl ){
       	suggestKeyUp();
       }
   });
@@ -266,6 +261,7 @@ MouseCellSelect.nowR = null; //行
 					CircleKeyboard.mouseJob( ctx, keyboardPossibleList, MouseCellSelect.nowC, MouseCellSelect.nowR, 0, 0 );
 				}
 			}
+
 		},
 
 		'touchmove mousemove': function( evt ){

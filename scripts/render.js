@@ -4,6 +4,7 @@ class Render {
     ctx.arc(x, y, r, 0, 2 * Math.PI, true);
     ctx.closePath();
   }
+
   static drawLine(ctx, x1, y1, x2, y2) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
@@ -11,9 +12,11 @@ class Render {
     ctx.stroke();
     ctx.closePath();
   }
+
   static clearScreen(ctx) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
+
   static tally(ctx, n, x, y) { //正の字
     var tally_cnt = n / 5 | 0;
     var stroke_cnt = n % 5;
@@ -59,5 +62,13 @@ class Render {
     ctx.closePath();
     ctx.stroke();
     ctx.restore();
+  }
+
+  static drawMiniNumber( ctx, r, c, innerR, innerC, fsize, number ){
+    const intervalPx = ( fsize + 1 );
+    const dx = intervalPx * ( innerC );
+    const dy = intervalPx * ( innerR );
+    ctx.fillText( number, ui.getCellLeft( c ) + dx + fsize,
+      ui.getCellTop( r ) + dy + fsize );
   }
 }

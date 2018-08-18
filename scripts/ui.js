@@ -47,6 +47,14 @@ class ui {
             ui.setCell( j, i, tbl[i * NUM_OF_CELLS + j] );
     }
 
+    static setCellsDim2( tbl ){
+      // 入力を2次元配列とする場合こっち
+        for( let i = 0; i < NUM_OF_CELLS; ++i )
+          for( let j = 0; j < NUM_OF_CELLS; ++j )
+            ui.setCell( j, i, tbl[i][j] );
+    }
+
+
     static refresh(){
       const logic = new Logic(NUM_OF_CELLS, BC, BR);
       const wrong = logic.check( ui.getCells() );
@@ -63,16 +71,6 @@ class ui {
           else {
             el.css('color', '#000000');
           }
-        }
-      }
-    }
-
-    static switchBoard(bnum){
-      selectedBoard = bnum;
-      for( let i　=　0; i　<　NUM_OF_CELLS; ++i ) {
-        for( let j　=　0; j　<　NUM_OF_CELLS; ++j ) {
-        const num = fields[selectedBoard].board[i][j];
-          $( "#" + ui._cellid( j, i ) ).html( num ? num : "<br>" );
         }
       }
     }

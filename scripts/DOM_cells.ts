@@ -3,7 +3,7 @@ function setupCells(){
   for( let i = 0; i < NUM_OF_CELLS; ++i ) {
     for( let j = 0; j < NUM_OF_CELLS; ++j ) {
       var cell = $("<div>");
-      var cellid = ui._cellid( j, i );
+      const cellid = ui._cellid( j, i );
       cell.attr({
         id: cellid,
         html: "<br>",

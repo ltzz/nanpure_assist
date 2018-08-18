@@ -117,3 +117,14 @@ function keycodeToDPos( keyCode: number ) :DPos {
    "dy": dy
  };
 }
+
+
+class Field {
+  static each( callback ){
+    for( let r = 0; r < NUM_OF_CELLS; ++r ) {
+			for( let c = 0; c < NUM_OF_CELLS; ++c ) {
+        callback(c, r);
+      }
+    }
+  }
+}

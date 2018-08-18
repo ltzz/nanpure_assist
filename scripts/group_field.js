@@ -1,9 +1,10 @@
 var fields = [];
 var BoardCnt = 0;
-var selectedBoard = 0;
+let selectedBoard = 0;
 const GFBoardWidth = 100;
 
 class FieldGroupManage {
+
   static generateTable(x) {
     let ret = "<table class='gf_field'>";
     for (let i = 0; i < 3; ++i) {
@@ -16,6 +17,11 @@ class FieldGroupManage {
     }
     ret += "</table>";
     return ret;
+  }
+
+  static switchBoard(bnum){
+    selectedBoard = bnum;
+    ui.setCellsDim2( fields[selectedBoard].board );
   }
 }
 
@@ -96,7 +102,7 @@ function GF_Init() {
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
         const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
 
-        var idx = evt_parent.attr("id").substr(5) | 0;
+        const idx = evt_parent.attr("id").substr(5) | 0;
 
         var m_x = mousePoint.mx - $('#place_board').offset().left;
         var m_y = mousePoint.my - $('#place_board').offset().top;
@@ -121,14 +127,14 @@ function GF_Init() {
         };
         const conclass2 = ["grid0_0", "grid0_2", "grid2_0", "grid2_2"];
 
-        for (let i = 0; i < fields.length; ++i) {
-          var fieldx = $("#field" + i);
-          if (i == idx) continue;
+        for (let from = 0; from < fields.length; ++from) {
+          var fieldx = $("#field" + from);
+          if (from === idx) continue;
           const moveBaseOffset = 2 * GFBoardWidth / 3;
-          var dx1 = fieldx.offset().left + moveBaseOffset;
-          var dy1 = fieldx.offset().top  + moveBaseOffset;
-          var dx2 = fieldx.offset().left - moveBaseOffset;
-          var dy2 = fieldx.offset().top  - moveBaseOffset;
+          const dx1 = fieldx.offset().left + moveBaseOffset;
+          const dy1 = fieldx.offset().top  + moveBaseOffset;
+          const dx2 = fieldx.offset().left - moveBaseOffset;
+          const dy2 = fieldx.offset().top  - moveBaseOffset;
           const ConnectThresSizePx = 15;
           //var con = {lefttop:4,righttop:2,leftbottom:3,rightbottom:1};
           if (Math.abs(dx1 - ox) < ConnectThresSizePx && Math.abs(dy1 - oy) < ConnectThresSizePx) {
@@ -136,29 +142,29 @@ function GF_Init() {
               top: dy1,
               left: dx1
             });
-            fields[i].connect[idx] = con.rightbottom;
-            fields[idx].connect[i] = con.lefttop;
+            fields[from].connect[idx] = con.rightbottom;
+            fields[idx].connect[from] = con.lefttop;
           } else if (Math.abs(dx1 - ox) < ConnectThresSizePx && Math.abs(dy2 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy2,
               left: dx1
             });
-            fields[i].connect[idx] = con.righttop;
-            fields[idx].connect[i] = con.leftbottom;
+            fields[from].connect[idx] = con.righttop;
+            fields[idx].connect[from] = con.leftbottom;
           } else if (Math.abs(dx2 - ox) < ConnectThresSizePx && Math.abs(dy1 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy1,
               left: dx2
             });
-            fields[i].connect[idx] = con.leftbottom;
-            fields[idx].connect[i] = con.righttop;
+            fields[from].connect[idx] = con.leftbottom;
+            fields[idx].connect[from] = con.righttop;
           } else if (Math.abs(dx2 - ox) < ConnectThresSizePx && Math.abs(dy2 - oy) < ConnectThresSizePx) {
             evt_parent.offset({
               top: dy2,
               left: dx2
             });
-            fields[i].connect[idx] = con.lefttop;
-            fields[idx].connect[i] = con.rightbottom;
+            fields[from].connect[idx] = con.lefttop;
+            fields[idx].connect[from] = con.rightbottom;
           }
         }
 
@@ -171,7 +177,7 @@ function GF_Init() {
 
           $("#field" + i).css("border", "none");
           for (let j in fields[i].connect) {
-            var connect = fields[i].connect[j];
+            const connect = fields[i].connect[j];
             $("#field" + i + " ." + conclass2[connect]).css("background-color", "#ffffcc");
             const board1 = fields[i].board;
             const board2 = fields[j].board;
@@ -194,7 +200,7 @@ function GF_Init() {
           }
         }
         fields[idx].dragging = false;
-        ui.switchBoard(idx);
+        FieldGroupManage.switchBoard(idx);
         $("#field" + idx).css("border", "thin solid #ff6666");
       }
     }).appendTo("#place_board");

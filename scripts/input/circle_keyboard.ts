@@ -1,9 +1,9 @@
 class CircleKeyboard {
 
-  static drawKeyboard( main_ctx, keyboardPossibleList, c, r, rx, ry ) {
+  static drawKeyboard( main_ctx: any, keyboardPossibleList: boolean[], c: number, r: number, rx: number, ry: number) {
 
-		const centerX = ui.getCellLeft( c ) + CELL_SIZ / 2;
-		const centerY = ui.getCellTop( r )  + CELL_SIZ / 2;
+		const centerX: number = ui.getCellLeft( c ) + CELL_SIZ / 2;
+		const centerY: number = ui.getCellTop( r )  + CELL_SIZ / 2;
 
 		main_ctx.save();
 		Render.clearScreen( main_ctx );
@@ -18,23 +18,23 @@ class CircleKeyboard {
 		// フォントの設定
 		main_ctx.font = (CELL_SIZ * 0.7  |0) + "px Segoe UI";
 
-    const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
+    const sAngle: number = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
 
     const cObj = CircleKeyboard.getSelectedNumberFromCoodinates(rx, ry);
 
 		for( let num = 0; num <= NUM_OF_CELLS; ++num ) { // 各番号について
-			const keyAngle = num * sAngle;
-			const numchr : string = (num === 0) ? 'C' : String(num); // 0は"C"
-			const chrWidth = main_ctx.measureText( numchr ).width;
-			const keyRX =  KEY_RADIUS * Math.sin( keyAngle );
-			const keyRY = -KEY_RADIUS * Math.cos( keyAngle );
-			const keyX = centerX + keyRX
-			const keyY = centerY + keyRY;
+			const keyAngle: number = num * sAngle;
+			const numchr: string = (num === 0) ? 'C' : String(num); // 0は"C"
+			const chrWidth: number = main_ctx.measureText( numchr ).width;
+			const keyRX: number =  KEY_RADIUS * Math.sin( keyAngle );
+			const keyRY: number = -KEY_RADIUS * Math.cos( keyAngle );
+			const keyX: number = centerX + keyRX
+			const keyY: number = centerY + keyRY;
 
 			if( cObj.selectedNumber === num && cObj.isInRange ) {
 				main_ctx.translate( centerX, centerY );
-				const keyLineAngle1 = ( num - 0.5 ) * sAngle;
-				const keyLineAngle2 = ( num + 0.5 ) * sAngle;
+				const keyLineAngle1 : number = ( num - 0.5 ) * sAngle;
+				const keyLineAngle2 : number = ( num + 0.5 ) * sAngle;
 				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle1, INNER_RADIUS, OUTER_RADIUS );
 				circleKeyboardStrokeBorderLine( main_ctx, keyLineAngle2, INNER_RADIUS, OUTER_RADIUS );
 
@@ -51,19 +51,19 @@ class CircleKeyboard {
   }
 
   static getSelectedNumberFromCoodinates (rx : number, ry : number){
-    const sAngle = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
-    let mouseAngle = Math.atan2( rx, -ry );
+    const sAngle: number = Math.PI * 2 / ( NUM_OF_CELLS + 1 );
+    let mouseAngle: number = Math.atan2( rx, -ry );
     mouseAngle = ( mouseAngle > 0 ) ? mouseAngle : ( 2 * Math.PI + mouseAngle );
-    const selectedNumber : number = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
-    const dfc = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
-    const isInRange : boolean = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
+    const selectedNumber: number = ( mouseAngle / sAngle + 0.5 |0 ) % ( NUM_OF_CELLS + 1 );
+    const dfc: number = Math.sqrt( rx * rx + ry * ry ); //中心からの距離
+    const isInRange: boolean = INNER_RADIUS <= dfc && dfc < OUTER_RADIUS;
     return {
       selectedNumber: selectedNumber,
       isInRange     : isInRange
     }
   }
 
-  static mouseJob ( ctx :any, keyboardPossibleList : any, c : number, r : number, rx : number, ry : number )
+  static mouseJob ( ctx: any, keyboardPossibleList: boolean[], c: number, r: number, rx: number, ry: number )
   	{
   		const main_ctx = ctx;
   		const cObj = CircleKeyboard.getSelectedNumberFromCoodinates(rx, ry);
@@ -85,19 +85,19 @@ class CircleKeyboard {
  * @param  number num 数字
  * @return string        色
  */
-function getKeyboardColor(possible : boolean, num : number): string {
-  let ret_val = "rgba(0, 0, 0, 0.7)";
+function getKeyboardColor(possible: boolean, num: number): string {
+  let ret_val = COLORS.black;
   if (num === 0) {
     // 0はクリアなので見えやすい色
-    ret_val = "rgba(0, 0, 0, 0.7)";
+    ret_val = COLORS.black;
   }
   else if (possible) {
     // 入力可能な数字も見えやすい色
-    ret_val = "rgba(0, 0, 0, 0.7)";
+    ret_val = COLORS.black;
   }
   else {
     //入力できない文字を灰色に
-    ret_val = "rgba(192, 192, 192, 0.7)";
+    ret_val = COLORS.gray;
   }
   return ret_val;
 }
@@ -120,7 +120,7 @@ function circleKeyboardIsEnable(): boolean {
  * circleKeyboardStrokeInnerCircle - 円形キーボードの内側の円描画
  *
  */
-function circleKeyboardStrokeInnerCircle(ctx, centerX, centerY, radius) {
+function circleKeyboardStrokeInnerCircle(ctx: any, centerX: number, centerY: number, radius: number) {
   ctx.fillStyle = "rgba(255,255,255,1.0)";
   Render.circle(ctx, centerX, centerY, radius);
   ctx.fill();
@@ -133,7 +133,7 @@ function circleKeyboardStrokeInnerCircle(ctx, centerX, centerY, radius) {
  * circleKeyboardStrokeOuterCircle - 円形キーボードの外側の円描画
  *
  */
-function circleKeyboardStrokeOuterCircle(ctx, centerX, centerY, radius) {
+function circleKeyboardStrokeOuterCircle(ctx: any, centerX: number, centerY: number, radius: number) {
   ctx.fillStyle = "rgba(255,255,255,0.9)";
   Render.circle(ctx, centerX, centerY, radius);
   ctx.fill();
@@ -144,7 +144,7 @@ function circleKeyboardStrokeOuterCircle(ctx, centerX, centerY, radius) {
  * circleKeyboardStrokeBorderLine - 円形キーボードの間の境界線描画
  *
  */
-function circleKeyboardStrokeBorderLine(ctx : any, keyLineAngle: number, INNER_RADIUS: number, OUTER_RADIUS: number) {
+function circleKeyboardStrokeBorderLine(ctx: any, keyLineAngle: number, INNER_RADIUS: number, OUTER_RADIUS: number) {
 
   const sindata = Math.sin(keyLineAngle);
   const cosdata = Math.cos(keyLineAngle);

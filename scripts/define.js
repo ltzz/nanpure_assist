@@ -10,4 +10,11 @@ const OUTER_RADIUS = CELL_SIZ * 2.0 * ( NUM_OF_CELLS / 10 );
 const INNER_RADIUS = CELL_SIZ * 0.7 * ( NUM_OF_CELLS / 10 );
 const KEY_RADIUS   = CELL_SIZ * 1.4 * ( NUM_OF_CELLS / 10 );
 // 9x9で最適だったサイズの流用
-// 
+//
+const COLORS = {
+  red:   "rgba(255, 0, 0, 0.7)",
+  black: "rgba(0, 0, 0, 0.7)",
+  gray: "rgba(192, 192, 192, 0.7)"
+}
+
+const FONTSIZE_MININUMBER = ( CELL_SIZ * 0.7 / BC |0 )

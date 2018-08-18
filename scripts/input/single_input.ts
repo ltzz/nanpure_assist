@@ -3,7 +3,7 @@
 class SingleNumberKeyboard {
   static currentNumber = 0; //単数字入力の現在の選択数字
 	static generateKey() {
-		let str = "";
+		let str: string = "";
 		for(let i = 0; i < NUM_OF_CELLS + 1; ++i){
 			const onclickcode = "SingleNumberKeyboard.selectKey(" + i + ");";
 			str += `<div id='key${i}' class='number_select_key noselectable'
@@ -12,7 +12,7 @@ class SingleNumberKeyboard {
 		str += "<div style='clear: both'></div>"; //float解除，はみ出し防止
 		document.getElementById("number_keyboard").innerHTML = str;
 	}
-	static selectKey(num :number) {
+	static selectKey(num: number) {
 		SingleNumberKeyboard.currentNumber = num;
 		for(let i = 0; i < NUM_OF_CELLS + 1; ++i){
 			// 非選択のキーは白で塗りつぶし
