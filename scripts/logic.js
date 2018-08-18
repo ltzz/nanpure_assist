@@ -95,8 +95,8 @@ class Logic {
       return ans;
     }
   }
-  
-  suggest(tbl) {
+
+  suggest( tbl ) {
     let possibleList = new Array(NUM_OF_CELLS * NUM_OF_CELLS);
     for (let i = 0; i < NUM_OF_CELLS; ++i) {
       for (let j = 0; j < NUM_OF_CELLS; ++j) {

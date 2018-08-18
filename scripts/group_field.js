@@ -38,8 +38,12 @@ function GF_Init() {
       connect: [],
       board: []
     };
-    for (let i = 0; i < 9; ++i) {
-      newBoard.board[i] = new Array(9).fill(0);
+
+    const BoardColumns = NUM_OF_CELLS;
+    const BoardRows    = NUM_OF_CELLS;
+
+    for (let i = 0; i < BoardRows; ++i) {
+      newBoard.board[i] = new Array(BoardColumns).fill(0);
     }
 
     fields.push(newBoard);
