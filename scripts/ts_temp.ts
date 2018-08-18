@@ -18,6 +18,14 @@ interface MouseRelativePoint {
   my: number;
 }
 
+interface DPos {
+	dx: number;
+  dy: number;
+}
+
+interface Array<T> {
+    fill(value: T): Array<T>;
+}
 
  /**
   * getPointFromMouseEvent - マウスイベントから座標取得
@@ -92,7 +100,7 @@ return {
  * @return boolean        有効か無効か
  */
 function singleNumberKeyboardIsEnable() : boolean {
-  return document.getElementById("single_number_keyboard").checked;
+  return (<HTMLInputElement>document.getElementById("single_number_keyboard")).checked;
 }
 
 
@@ -183,7 +191,7 @@ function mainMouseUpEvent( evt ){
     ui.setCell( MouseCellSelect.nowC, MouseCellSelect.nowR, SingleNumberKeyboard.currentNumber );
   }
 
-  if(document.getElementById("keyboard_input").checked){
+  if((<HTMLInputElement>document.getElementById("keyboard_input")).checked){
   }
 
   MouseCellSelect.nowC = null;
@@ -239,7 +247,7 @@ function showCountNumbers() {
 
 function drawPossible(){
   const possibleList = logic.suggest(ui.getCells());
-  var cvs = document.getElementById("possible");
+  var cvs = <HTMLCanvasElement>document.getElementById("possible");
   const scale = window.devicePixelRatio || 1;
   cvs.width = WIDTH * scale; 		// Canvas要素としてのサイズ
   cvs.height = HEIGHT * scale;	// Canvas要素としてのサイズ
@@ -271,9 +279,9 @@ function drawUsedNumber( ctx ){
 
   let chist = [], rhist = [], bhist = [];
   for( let i = 0; i < NUM_OF_CELLS; ++i ) {
-    chist[i] = new Array(NUM_OF_CELLS).fill(0);
-    rhist[i] = new Array(NUM_OF_CELLS).fill(0);
-    bhist[i] = new Array(NUM_OF_CELLS).fill(0);
+    chist[i] = (new Array(NUM_OF_CELLS)).fill(0);
+    rhist[i] = (new Array(NUM_OF_CELLS)).fill(0);
+    bhist[i] = (new Array(NUM_OF_CELLS)).fill(0);
   }
 
   const tbl = ui.getCells();

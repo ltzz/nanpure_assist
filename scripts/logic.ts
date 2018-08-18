@@ -5,6 +5,13 @@
 
 'use strict';
 
+interface checkRetValue {
+  chist: number[];
+  rhist: number[];
+  bhist: number[];
+  valid: boolean;
+}
+
 /**
  * Logic - セル数にかかわらず一般化できるロジック
  *
@@ -13,7 +20,10 @@
  * @param  {type} BR           ブロックの縦のセル数
  */
 class Logic {
-
+  public NUM_OF_CELLS;
+  public BC;
+  public BR;
+  public TOTAL_CELLS;
   constructor(NUM_OF_CELLS, BC, BR) {
     this.NUM_OF_CELLS = NUM_OF_CELLS;
     this.BC = BC;
@@ -29,7 +39,6 @@ class Logic {
     const NUM_OF_CELLS = this.NUM_OF_CELLS;
     const BC = this.BC,
       BR = this.BR;
-    let ret = [];
     let chist = [],
       rhist = [],
       bhist = [];
@@ -59,10 +68,12 @@ class Logic {
         }
       }
     }
-    ret.chist = chist;
-    ret.rhist = rhist;
-    ret.bhist = bhist;
-    ret.valid = (maxcnt >= 2) ? false : true;
+    let ret :checkRetValue = {
+      chist : chist,
+      rhist : rhist,
+      bhist : bhist,
+      valid : (maxcnt >= 2) ? false : true
+    };
     return ret;
   }
 

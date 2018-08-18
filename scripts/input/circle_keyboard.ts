@@ -110,7 +110,7 @@ function getKeyboardColor(possible: boolean, num: number): string {
 */
 function circleKeyboardIsEnable(): boolean {
   // 単数字入力と排他
-  return !document.getElementById("single_number_keyboard").checked;
+  return !(<HTMLInputElement>document.getElementById("single_number_keyboard")).checked;
 }
 
 

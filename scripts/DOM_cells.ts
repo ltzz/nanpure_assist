@@ -31,6 +31,6 @@ function setupCells(){
     $(".cell").css( {
       "width": CELL_SIZ + "px",
       "height": CELL_SIZ + "px",
-      "font-size": CELL_SIZ * 0.7 |0 + "px" } );
+      "font-size": Math.floor( CELL_SIZ * 0.7 ).toString(10) + "px" } );
   }
 }

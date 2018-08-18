@@ -94,7 +94,7 @@ class ui {
 
   class CanvasManage {
     static mainCanvasInit(){
-      const cvs = $('#main_canvas').get(0);
+      const cvs = <HTMLCanvasElement>$('#main_canvas').get(0);
       let ctx = cvs.getContext('2d');
       const scale = window.devicePixelRatio || 1;
       cvs.width = WIDTH * scale; 		// Canvas要素としてのサイズ

@@ -34,7 +34,6 @@ function GF_Init() {
       selected: false,
       dragOffsetX: 0,
       dragOffsetY: 0,
-      selected: false,
       connect: [],
       board: []
     };
@@ -66,7 +65,7 @@ function GF_Init() {
         var b_x = mousePoint.mx - evt_parent.offset().left;
         var b_y = mousePoint.my - evt_parent.offset().top;
 
-        const idx = evt_parent.attr("id").substr(5) | 0;
+        const idx :number = parseInt( evt_parent.attr("id").substr(5) );
         fields[idx].dragOffsetX = b_x;
         fields[idx].dragOffsetY = b_y;
         fields[idx].dragging = true;
@@ -80,14 +79,14 @@ function GF_Init() {
       mousemove: function(evt) {
         var evt_parent_id = $(evt.target).parents("div")[0].id;
         var evt_parent = $("#" + evt_parent_id);
-        var selectedidx = evt_parent.attr("id").substr(5) | 0;
+        var selectedidx = parseInt( evt_parent.attr("id").substr(5) );
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
         if (fields[selectedidx].dragging) {
           const isTouchEvent = evt.type === "touchmove";
 
           const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
 
-          var idx = evt_parent.attr("id").substr(5) | 0;
+          var idx = parseInt( evt_parent.attr("id").substr(5) );
 
           var m_x = mousePoint.mx - $('#place_board').offset().left;
           var m_y = mousePoint.my - $('#place_board').offset().top;
@@ -106,7 +105,7 @@ function GF_Init() {
         if (evt_parent_id.substr(0, 5) != "field") return; //端で親要素のIDが返る対策
         const mousePoint = getPointFromMouseEvent(evt, isTouchEvent);
 
-        const idx = evt_parent.attr("id").substr(5) | 0;
+        const idx = parseInt( evt_parent.attr("id").substr(5) );
 
         var m_x = mousePoint.mx - $('#place_board').offset().left;
         var m_y = mousePoint.my - $('#place_board').offset().top;
