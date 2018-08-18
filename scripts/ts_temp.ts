@@ -2,6 +2,11 @@
  * @fileoverview TypeScriptで記述した関数 現在は移行中のためここにまとめる
  */
 
+/// <reference path="../typings/globals/jquery/index.d.ts" />
+
+(function() {
+	console.log( '$', $.fn.jquery );
+}());
 
 interface MousePoint {
   mx: number;
@@ -230,7 +235,6 @@ function showCountNumbers() {
 				//Render.tally( ctx, numbers_count[i] , i * 20 + 100, HEIGHT - 50 ); // 正の字
 		}
 		ctx.fillText( "remain : " + numbers_count[0], 10, HEIGHT - 10);
-	}
 }
 
 function drawPossible(){

@@ -1,7 +1,4 @@
 
-let ctx;
-let keyboardPossibleList;
-let logic;
 window.onload = function(){
 
 	MouseCellSelect.nowC = null; //クリック中の列
@@ -120,8 +117,8 @@ window.onload = function(){
 
 	$('#main_canvas').bind({
 		'touchstart mousedown': mainMouseDownEvent,
-		'touchmove mousemove': mainMouseMoveEvent,
-		'touchend mouseup'   : mainMouseUpEvent
+		'touchmove mousemove' : mainMouseMoveEvent,
+		'touchend mouseup'    : mainMouseUpEvent
 	});
 
 };

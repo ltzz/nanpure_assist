@@ -1,3 +1,6 @@
+let ctx: any;
+let keyboardPossibleList: boolean[];
+let logic: any;
 
 const BC = 3, BR = 3;
 const NUM_OF_CELLS = BC * BR;
