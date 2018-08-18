@@ -91,3 +91,17 @@ class ui {
     }
 
   }
+
+  class CanvasManage {
+    static mainCanvasInit(){
+      const cvs = $('#main_canvas').get(0);
+      let ctx = cvs.getContext('2d');
+      const scale = window.devicePixelRatio || 1;
+      cvs.width = WIDTH * scale; 		// Canvas要素としてのサイズ
+  		cvs.height = HEIGHT * scale;	// Canvas要素としてのサイズ
+  		cvs.style.width  = WIDTH  + "px"; 	// CSSでのサイズ
+  		cvs.style.height = HEIGHT + "px";	 	// CSSでのサイズ
+		  ctx.scale(scale, scale); // 高DPI対応
+      return ctx;
+    }
+  }
