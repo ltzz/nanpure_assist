@@ -121,15 +121,16 @@ class Logic {
       for (let c = 0; c < NUM_OF_CELLS; ++c) {
         if (tbl[r * NUM_OF_CELLS + c]) {
           const val = tbl[r * NUM_OF_CELLS + c] - 1;
-          const br = r / BR | 0,
-            bc = c / BC | 0;
+          const br = r / BR |0;
+          const bc = c / BC |0;
           for (let i = 0; i < NUM_OF_CELLS; ++i) {
-            //該当ブロックのその数字を消す
-            possibleList[NUM_OF_CELLS * (BC * br + (i / BC | 0)) + BC * bc + (i % BC)][val] = false;
-            // ★↑ここの添字おかしい？
-            //該当行のその数字を消す
+            //該当ブロック内全てのセルからのその数字を消す
+            const dy = (i / BC |0); // ブロック左上からのy増分
+            const dx = (i % BC);    // ブロック左上からのx増分
+            possibleList[NUM_OF_CELLS * (BR * br + dy) + BC * bc + dx][val] = false;
+            //該当行内全てのセルからその数字を消す
             possibleList[NUM_OF_CELLS * r + i][val] = false;
-            //該当列のその数字を消す
+            //該当列内全てのセルからその数字を消す
             possibleList[NUM_OF_CELLS * i + c][val] = false;
           }
         }
