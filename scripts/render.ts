@@ -1,11 +1,11 @@
 class Render {
-  static circle(ctx, x, y, r) {
+  static circle(ctx: any, x: number, y: number, r: number) {
     ctx.beginPath();
     ctx.arc(x, y, r, 0, 2 * Math.PI, true);
     ctx.closePath();
   }
 
-  static drawLine(ctx, x1, y1, x2, y2) {
+  static drawLine(ctx: any, x1: number, y1: number, x2: number, y2: number) {
     ctx.beginPath();
     ctx.moveTo(x1, y1);
     ctx.lineTo(x2, y2);
@@ -13,11 +13,11 @@ class Render {
     ctx.closePath();
   }
 
-  static clearScreen(ctx) {
+  static clearScreen(ctx: any) {
     ctx.clearRect(0, 0, ctx.canvas.width, ctx.canvas.height);
   }
 
-  static tally(ctx, n, x, y) { //正の字
+  static tally(ctx: any, n: number, x: number, y: number) { //正の字
     var tally_cnt = n / 5 | 0;
     var stroke_cnt = n % 5;
     ctx.save();
@@ -64,7 +64,7 @@ class Render {
     ctx.restore();
   }
 
-  static drawMiniNumber( ctx, r, c, innerR, innerC, fsize, number ){
+  static drawMiniNumber( ctx: any, r: number, c: number, innerR: number, innerC: number, fsize: number, number: number ){
     const intervalPx = ( fsize + 1 );
     const dx = intervalPx * ( innerC );
     const dy = intervalPx * ( innerR );

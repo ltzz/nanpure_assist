@@ -1,8 +1,9 @@
 
 window.onload = function(){
 
-	MouseCellSelect.nowC = null; //クリック中の列
-	MouseCellSelect.nowR = null; //行
+	MouseCellSelect.nowC = 0; //クリック中の列
+	MouseCellSelect.nowR = 0; //行
+	MouseCellSelect.enable = false;
 
 	GF_Init();
 

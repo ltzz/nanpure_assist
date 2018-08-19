@@ -34,13 +34,26 @@ interface Array<T> {
   * @return MousePoint         座標
   */
 
- function getPointFromMouseEvent( evt, isTouchEvent ): MousePoint {
-   const touchEvent = isTouchEvent ? evt.originalEvent.changedTouches[0] : null;
-   var m_x = ( isTouchEvent ? touchEvent.pageX　:　evt.pageX );
-   var m_y = ( isTouchEvent ? touchEvent.pageY　:　evt.pageY );
+ function getPointFromMouseEvent( evt: JQueryMouseEventObject, isTouchEvent: boolean ): MousePoint {
+  const touchEvent: Event = evt.originalEvent;
+
+  const isTouch =  (item: Event): item is TouchEvent => isTouchEvent;
+  // Type Guard isTouchEventがtrueならTouchEventとみなす
+
+  let m_x;
+  let m_y;
+  if( isTouch(touchEvent) ){
+    const touchEventValue = touchEvent.changedTouches[0];
+    m_x = touchEventValue.pageX;
+    m_y = touchEventValue.pageY;
+  } else {
+    m_x = evt.pageX;
+    m_y = evt.pageY;
+  }
+  
   return {
-    "mx": m_x,
-    "my": m_y
+  "mx": m_x,
+  "my": m_y
   };
  }
 
@@ -68,7 +81,7 @@ interface Array<T> {
   * @return MouseRelativePoint         相対座標
   */
 
- function getRelativePointFromMouseEvent( evt, isTouchEvent ): MouseRelativePoint {
+ function getRelativePointFromMouseEvent( evt: JQueryMouseEventObject, isTouchEvent: boolean ): MouseRelativePoint {
    const mousePoint = getPointFromMouseEvent( evt,  isTouchEvent );
    const mouseRPoint = getRelativePoint( mousePoint );
    return mouseRPoint;
@@ -85,10 +98,10 @@ interface Array<T> {
 
   var m_x = mousePoint.mx  - $('#place_board').offset().left;
   var m_y = mousePoint.my  - $('#place_board').offset().top;
-return {
-  "mx": m_x,
-  "my": m_y
-};
+  return {
+    "mx": m_x,
+    "my": m_y
+  };
 }
 
 
@@ -130,7 +143,7 @@ class Field {
   }
 }
 
-function mainMouseDownEvent( evt ){
+function mainMouseDownEvent( evt: JQueryMouseEventObject ){
   const isTouch = evt.type === "touchstart";
   const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
 
@@ -148,12 +161,12 @@ function mainMouseDownEvent( evt ){
 }
 
 
-function mainMouseMoveEvent( evt ){
+function mainMouseMoveEvent( evt: JQueryMouseEventObject ){
   evt.preventDefault();
   const isTouch = evt.type === "touchmove";
   const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
 
-  if( MouseCellSelect.nowC === null || MouseCellSelect.nowR === null
+  if( MouseCellSelect.enable === false
     || !(ui._inrange(MouseCellSelect.nowC, MouseCellSelect.nowR)) ){
     return;
   }
@@ -169,7 +182,7 @@ function mainMouseMoveEvent( evt ){
 }
 
 
-function mainMouseUpEvent( evt ){
+function mainMouseUpEvent( evt: JQueryMouseEventObject ){
   const isTouch = evt.type === "touchend";
   const mouseRPoint = getRelativePointFromMouseEvent( evt,  isTouch );
 
@@ -182,8 +195,9 @@ function mainMouseUpEvent( evt ){
   if((<HTMLInputElement>document.getElementById("keyboard_input")).checked){
   }
 
-  MouseCellSelect.nowC = null;
-  MouseCellSelect.nowR = null;
+  MouseCellSelect.nowC = 0;
+  MouseCellSelect.nowR = 0;
+  MouseCellSelect.enable = false;
   Render.drawLine(ctx, WIDTH, 0, WIDTH, HEIGHT);
   ui.refresh();
   drawSuggest();
@@ -242,9 +256,9 @@ function drawPossible(){
   cvs.style.width  = WIDTH  + "px"; 	// CSSでのサイズ
   cvs.style.height = HEIGHT + "px";	 	// CSSでのサイズ
   const pctx = cvs.getContext('2d');
-  pctx.scale(scale, scale); // 高DPI対応
-  pctx.font = FONTSIZE_MININUMBER + "px Meiryo UI";
-  pctx.fillStyle = COLORS.red;
+  pctx!.scale(scale, scale); // 高DPI対応
+  pctx!.font = FONTSIZE_MININUMBER + "px Meiryo UI";
+  pctx!.fillStyle = COLORS.red;
 
   Field.each( (c,r) => {
     let cnt = 0, n;
