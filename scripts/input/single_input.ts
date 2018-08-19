@@ -22,3 +22,13 @@ class SingleNumberKeyboard {
 		document.getElementById("key"+num).style.backgroundColor = "#cccccc";
 	}
 }
+
+
+/**
+ * singleNumberKeyboardIsEnable - 単数字入力キーボードが有効か
+ *
+ * @return boolean        有効か無効か
+ */
+function singleNumberKeyboardIsEnable() : boolean {
+  return (<HTMLInputElement>document.getElementById("single_number_keyboard")).checked;
+}

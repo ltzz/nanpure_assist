@@ -92,18 +92,6 @@ return {
 }
 
 
-
-
-/**
- * singleNumberKeyboardIsEnable - 単数字入力キーボードが有効か
- *
- * @return boolean        有効か無効か
- */
-function singleNumberKeyboardIsEnable() : boolean {
-  return (<HTMLInputElement>document.getElementById("single_number_keyboard")).checked;
-}
-
-
 /**
  * keycodeToDPos - キーコードを変位に変換
  *
@@ -249,7 +237,7 @@ function drawPossible(){
   const possibleList = logic.suggest(ui.getCells());
   var cvs = <HTMLCanvasElement>document.getElementById("possible");
   const scale = window.devicePixelRatio || 1;
-  cvs.width = WIDTH * scale; 		// Canvas要素としてのサイズ
+  cvs.width  = WIDTH * scale; 	// Canvas要素としてのサイズ
   cvs.height = HEIGHT * scale;	// Canvas要素としてのサイズ
   cvs.style.width  = WIDTH  + "px"; 	// CSSでのサイズ
   cvs.style.height = HEIGHT + "px";	 	// CSSでのサイズ

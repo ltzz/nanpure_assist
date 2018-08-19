@@ -22,7 +22,7 @@ class ui {
     }
 
     static getCell( x, y ){
-      return fields[selectedBoard].board[y][x];
+      return fields[FieldGroupManage.selectedBoard].board[y][x];
       //return $( "#" + _cellid( x, y ) ).html()|0;
     }
 
@@ -36,7 +36,7 @@ class ui {
 
     static setCell( x, y, num ){
       $( "#" + ui._cellid( x, y ) ).html( ( num != 0 ) ? num : "<br>" );
-      fields[selectedBoard].board[y][x] = num;
+      fields[FieldGroupManage.selectedBoard].board[y][x] = num;
     }
 
     static setCells( tbl ){
